@@ -1,6 +1,6 @@
 {
   "name": "prompt-state",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "One glyph and word under the prompt for what Claude Code is doing: working, done, asking you, waiting for permission, stopped or error; background agents counted.",
   "author": { "name": "Nightlab" },
   "license": "MIT",

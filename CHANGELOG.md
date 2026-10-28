@@ -4,6 +4,12 @@ The form is Keep a Changelog; versions follow SemVer.
 
 ## [Unreleased]
 
+## 0.1.1 - 2026-10-28
+
+### Added
+- `package.json`: the plugin is published to npm as `@nightlab-agent/prompt-state` (plugin files only, no scripts), so a marketplace can install it from an npm source.
+- The release gate's version check reads `package.json` too (five files).
+
 ## 0.1.0 - 2026-10-28
 
 ### Added

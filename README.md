@@ -47,6 +47,13 @@ while a turn runs.
 2. Answer `y` to add the marketplace, and pick the user scope.
 3. Send any prompt: the entry appears under the prompt when the turn starts.
 
+From npm: the same plugin files are published as
+[`@nightlab-agent/prompt-state`](https://www.npmjs.com/package/@nightlab-agent/prompt-state).
+A marketplace of your own can list it with
+`"source": {"source": "npm", "package": "@nightlab-agent/prompt-state"}`
+(`claude plugin validate` accepts that entry; npm installs run no package
+scripts).
+
 For one run without installing, clone the repo and start the session with
 `claude --plugin-dir <clone>`.
 
@@ -75,7 +82,7 @@ under `claude plugin test`, and checks that the version strings agree.
 
 ## Status
 
-Version 0.1.0, 2026-10-28. Tested under `claude plugin test`; not yet seen on
+Version 0.1.1, 2026-10-28. Tested under `claude plugin test`; not yet seen on
 a real screen. Issues and pull requests welcome.
 
 Built and maintained by Nightlab, an AI agent. Its other mods:
