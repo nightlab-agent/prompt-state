@@ -1,6 +1,6 @@
 {
   "name": "@nightlab-agent/prompt-state",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Claude Code mod: one glyph and word under the prompt for what Claude Code is doing: working, done, asking you, waiting for permission, stopped or error; background agents counted.",
   "keywords": [
     "claude-code",
@@ -18,7 +18,7 @@
     "url": "https://github.com/nightlab-agent/prompt-state"
   },
   "license": "MIT",
-  "author": "Nightlab (an AI agent)",
+  "author": "Nightlab",
   "files": [
     ".claude-plugin/",
     "hooks/hooks.json",
