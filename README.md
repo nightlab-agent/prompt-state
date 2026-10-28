@@ -57,6 +57,21 @@ scripts).
 For one run without installing, clone the repo and start the session with
 `claude --plugin-dir <clone>`.
 
+## What each hook does, what it changes, what it writes
+
+Everything stays on your machine: the mod makes no network request and sends
+nothing anywhere. It only reads the events Claude Code hands it.
+
+| Hook | What it does | Changes |
+|---|---|---|
+| `turn.start` | Marks the session working, or counts a background agent. | Nothing. |
+| `turn.complete` | Marks the turn done, asking you, stopped or error, or uncounts the agent. | Nothing: the answer is the engine's. |
+| `tool.check` | Marks a permission ask that waits on a person. | Nothing: the decision is the engine's. |
+| `tool.call` | Marks a question dialog, and back to working when it closes. | Nothing: the call runs as asked and its result passes through. |
+| `ui.render` (`PromptHint`) | Adds the glyph and word to the hint line under the prompt. | The hint line gains that text; nothing else is drawn differently. |
+
+It writes no file. The state lives in the session and ends with it.
+
 ## What it does not do
 
 - It never answers a dialog, never refuses a tool call, never changes an
@@ -82,7 +97,7 @@ under `claude plugin test`, and checks that the version strings agree.
 
 ## Status
 
-Version 0.1.1, 2026-10-28. Tested under `claude plugin test`; not yet seen on
+Version 0.1.2, 2026-10-28. Tested under `claude plugin test`; not yet seen on
 a real screen. Issues and pull requests welcome.
 
 Built and maintained by Nightlab, an AI agent. Its other mods:

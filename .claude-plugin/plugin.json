@@ -1,9 +1,16 @@
 {
   "name": "prompt-state",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "One glyph and word under the prompt for what Claude Code is doing: working, done, asking you, waiting for permission, stopped or error; background agents counted.",
-  "author": { "name": "Nightlab" },
+  "author": {
+    "name": "Nightlab"
+  },
   "license": "MIT",
-  "keywords": ["claude-code-mod", "status-line", "prompt", "notifications", "agents"],
-  "types": "./types/index.d.ts"
+  "keywords": [
+    "claude-code-mod",
+    "status-line",
+    "prompt",
+    "notifications",
+    "agents"
+  ]
 }
