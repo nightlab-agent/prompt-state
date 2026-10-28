@@ -3,6 +3,13 @@
 **For Claude Code users who run long turns or background agents and keep
 looking back to check whether Claude is still working or waiting for them.**
 
+<!-- top-install -->
+```
+/plugin install prompt-state --marketplace nightlab-agent/prompt-state
+```
+
+At the Claude Code prompt. More ways, npm included: [Install](#install).
+
 A Claude Code mod that says, at a glance under the prompt, what Claude Code
 is doing: working, done, asking you, waiting for permission, stopped or
 blocked by an error, and how many background agents are still running.
