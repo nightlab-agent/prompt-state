@@ -1,5 +1,6 @@
 #!/bin/sh
-# Release gate: the manifest and module validate, the tests pass, and the
+# Release gate: the manifest and module validate, the plugin directory
+# checklist (tests/checklist.py, from mod-ready) has no FAIL, the tests pass, and the
 # version string is the same in the plugin manifest, the marketplace manifest,
 # the changelog's newest release, the README and package.json.
 # Exit non-zero on any of them. Run from the repo root: sh tests/release.sh
@@ -9,6 +10,7 @@ cd "$(dirname "$0")/.."
 claude plugin validate .
 claude plugin test .
 sh tests/typecheck.sh
+python3 -I tests/checklist.py
 python3 -I - <<'PY'
 import json, re, sys
 plugin = json.load(open('.claude-plugin/plugin.json'))['version']
