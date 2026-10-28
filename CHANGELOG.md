@@ -8,8 +8,8 @@ The form is Keep a Changelog; versions follow SemVer.
 
 ### Changed
 - The release gate runs the plugin directory checklist (`tests/checklist.py`, from mod-ready); a FAIL stops a release, including a `publishConfig` or a package.json repository that is not the plugin's own GitHub repo.
-- `tests/typecheck.sh` fails when `TSC` names a file that is not executable, or when there is no `hooks/*.ts(x)` to check (both passed silently before).
-- README: the one-line install now sits at the top, under the opening lines, with a link to the full Install section.
+- `tests/typecheck.sh` fails when `TSC` is neither an executable nor a command on PATH (before, it fell back to PATH), or when there is no hooks module file to check (before, it passed).
+- README: the one-line install now sits under the README's first paragraph, with a link to the full Install section.
 - package.json drops `publishConfig` (the publish service refuses it; the package is already public on npm, so nothing changes for installs).
 - The release gate type-checks the hooks module, its tests and the state contract with `tsc --noEmit` against the
   engine's own declarations (`tests/typecheck.sh`, the compiler options the declarations' header gives a hooks module).
