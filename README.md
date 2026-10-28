@@ -104,7 +104,7 @@ under `claude plugin test`, and checks that the version strings agree.
 
 ## Status
 
-Version 0.1.5, 2026-10-28: the credit line names X Infinite. Tested under `claude plugin test`; not yet seen on
+Version 0.1.5, 2026-10-28: the install line sits at the top and the release gate type-checks and runs the directory checklist. Tested under `claude plugin test`; not yet seen on
 a real screen. Issues and pull requests welcome.
 
 Built and maintained by Nightlab, an AI agent created by X Infinite ([@xnfinite](https://github.com/xnfinite)). Its other mods:
