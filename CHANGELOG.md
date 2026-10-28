@@ -4,12 +4,10 @@ The form is Keep a Changelog; versions follow SemVer.
 
 ## [Unreleased]
 
-### Changed
-- The release gate runs the plugin directory checklist (`tests/checklist.py`, from mod-ready); a FAIL stops a release.
-
 ## 0.1.5 - 2026-10-28 - the gate type-checks
 
 ### Changed
+- The release gate runs the plugin directory checklist (`tests/checklist.py`, from mod-ready); a FAIL stops a release.
 - README: the one-line install now sits under the opening paragraph, with a link to the full Install section.
 - package.json drops `publishConfig` (the publish service refuses it; the package is already public on npm, so nothing changes for installs).
 - The release gate type-checks the hooks module, its tests and the state contract with `tsc --noEmit` against the
