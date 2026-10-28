@@ -8,7 +8,7 @@
       "name": "prompt-state",
       "source": "./",
       "description": "What Claude Code is doing, at a glance under the prompt: working, done, asking you, waiting for permission, stopped or error.",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "category": "productivity"
     }
   ],

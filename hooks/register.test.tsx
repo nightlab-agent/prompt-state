@@ -1,4 +1,5 @@
 import { expect, test } from 'claude-code/testing'
+import type { TestBody } from 'claude-code/testing'
 
 import { afterTurn, labelOf } from './register'
 
@@ -6,7 +7,7 @@ import { afterTurn, labelOf } from './register'
 // tool events, records `$.ui.status`, and reads what the plugin returned.
 // Nothing touches the real file system.
 
-type On = Parameters<Parameters<typeof test>[1]>[1]
+type On = Parameters<TestBody>[1]
 
 const world = (on: On, opts: { statusFails?: boolean; verdict?: 'allow' | 'ask' | 'deny' } = {}) => {
   const statuses: (string | undefined)[] = []
@@ -26,10 +27,10 @@ const world = (on: On, opts: { statusFails?: boolean; verdict?: 'allow' | 'ask' 
   return { statuses, during }
 }
 
-const start = ($: Parameters<Parameters<typeof test>[1]>[0], turnId: string, agentId?: string) =>
+const start = ($: Parameters<TestBody>[0], turnId: string, agentId?: string) =>
   $.turn.start({ text: 'go', turnId, ...(agentId ? { agentId } : {}) })
 
-const end = ($: Parameters<Parameters<typeof test>[1]>[0], turnId: string, answer: string, reason: 'answer' | 'aborted' | 'error' = 'answer', agentId?: string) =>
+const end = ($: Parameters<TestBody>[0], turnId: string, answer: string, reason: 'answer' | 'aborted' | 'error' = 'answer', agentId?: string) =>
   $.turn.complete({ answer, reason, turnId, durationMs: 10, isAborted: reason === 'aborted', ...(agentId ? { agentId } : {}) })
 
 test('a turn shows working, then done; the answer is passed on unchanged', async ($, on) => {

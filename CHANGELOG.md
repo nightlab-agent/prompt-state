@@ -4,6 +4,16 @@ The form is Keep a Changelog; versions follow SemVer.
 
 ## [Unreleased]
 
+## 0.1.5 - 2026-10-28 - the gate type-checks
+
+### Changed
+- The release gate type-checks the hooks module, its tests and the state contract with `tsc --noEmit` against the
+  engine's own declarations (`tests/typecheck.sh`, the compiler options the declarations' header gives a hooks module).
+  No `tsc` or no declarations fails the gate; it never skips.
+
+### Fixed
+- The module named a type `Engine` that `claude-code` does not export, so the functions using it went unchecked; it now names `EngineInterface`. No behaviour change.
+
 ## 0.1.4 - 2026-10-28 - plugin.json links the repo
 
 ### Changed

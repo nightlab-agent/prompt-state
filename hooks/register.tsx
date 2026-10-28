@@ -1,5 +1,5 @@
 import { atom, read, update } from 'claude-code'
-import type { Engine, Register } from 'claude-code'
+import type { EngineInterface, Register } from 'claude-code'
 
 import type { Now, Phase } from '../types'
 
@@ -68,7 +68,7 @@ export const labelOf = (s: Now, isWorking = false) => {
 }
 
 /** Moves the state on and shows it in the status line; a failure of its own is swallowed. */
-async function set($: Engine, fn: (s: Now) => Now) {
+async function set($: EngineInterface, fn: (s: Now) => Now) {
   try {
     const s = await update($, now, fn)
     try {
