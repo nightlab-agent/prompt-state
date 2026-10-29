@@ -65,8 +65,8 @@ For one run without installing, clone the repo and start Claude Code with
 `--plugin-dir <path to the clone>`.
 
 Send any prompt: the notice and the hint line entry should then show under
-the prompt when the turn starts. The hint line entry is not yet confirmed on
-a real screen: if either does not show for you, open an issue with your
+the prompt when the turn starts. Both have been seen in a terminal; the
+desktop app and editors are not yet seen: if either does not show for you, open an issue with your
 Claude Code version and whether you run it in a terminal, the desktop app or
 an editor.
 
@@ -175,8 +175,8 @@ the events Claude Code hands it.
 - A missed turn end (another plugin's hook passing it by) can leave the
   entry one step behind until the next turn.
 - Which surfaces (terminal, desktop app, an editor) draw the hint line entry
-  and the notice is not yet known: the notice has been seen on one real
-  screen, the hint line entry on none. A surface that draws no notice still
+  and the notice is not yet known: both have been seen in a terminal, not yet
+  in the desktop app or an editor. A surface that draws no notice still
   has `/skills-used`.
 
 ## Remove it
