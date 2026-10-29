@@ -12,6 +12,13 @@ This mod (a plugin that changes how Claude Code draws things) adds one entry
 at the end of the hint line under the prompt, and pins a notice under the
 prompt with both facts. It writes no file. Nothing leaves your machine.
 
+What a terminal showed after a turn (the notice, then the hint line):
+
+```
+⚠ prompt-state: ✅ done
+⏵⏵ bypass permissions on (shift+tab to cycle) · ✅ done
+```
+
 ## Install
 
 One line at the Claude Code prompt:
@@ -30,8 +37,8 @@ claude plugin install prompt-state --marketplace nightlab-agent/prompt-state
 For one run without installing, clone the repo and start Claude Code with
 `--plugin-dir <path to the clone>`.
 
-Send any prompt: the notice and the hint line entry should then show under
-the prompt when the turn starts. Both have been seen in a terminal; the
+Send any prompt: once the turn ends, the notice and the hint line entry under
+the prompt show `✅ done`. Both have been seen in a terminal; the
 desktop app and editors are not yet seen: if either does not show for you, open an issue with your
 Claude Code version and whether you run it in a terminal, the desktop app or
 an editor.
@@ -87,6 +94,13 @@ one loaded and lists them on `/skills-used`. (Read from its README and
 `mods/where-am-i/hooks/register.tsx` on 2026-10-29.) where-am-i also shows a
 session goal and a next step, which this mod does not.
 
+[agent-standup](https://github.com/Atoll92/agent-standup) (338 stars) shows
+who is working and who needs you across Claude Code, Codex and Mistral Vibe
+sessions, in a VS Code extension, a terminal command and a desktop app (from
+its description, read 2026-10-29; its code was not read). Pick it to watch many
+sessions at once. This mod stays inside one Claude Code prompt and also tracks
+skills.
+
 ## Every skill this session loaded
 
 Type `/skills-used` (this output is not yet seen on a real screen; the tests check it):
@@ -106,8 +120,7 @@ build). The list keeps the last 200 loads and ends with the session.
 
 `skills` ("Track skills", on by default). Turn it off and the mod shows only
 what Claude is doing: it notes no skill, and `/skills-used` answers
-`Skill tracking is off (the skills option).` Claude Code lists a plugin's
-options in `/config`. Whether a change there reaches a running session or
+`Skill tracking is off (the skills option).` Whether a change to it reaches a running session or
 only the next one is not yet tested.
 
 ## How it knows
@@ -132,8 +145,10 @@ call that names no plugin is listed under the bare name, never guessed to be
 one plugin's.
 
 Another plugin's hook can run first and answer an event without passing it
-on (Claude Code says so in a notice; seen in `-p` sessions with the
-built-in `cc-plugin-sec-default` plugin). A skill load that came through the
+on. Claude Code's built-in guard, `cc-plugin-sec-default`, runs before
+the mods you install where an organization manages Claude Code or the login is
+a Team or Enterprise one ([the order mods run in](https://code.claude.com/docs/en/plugins/mods/events.md#the-order-mods-run-in));
+it did this in `-p` sessions on a Team account. A skill load that came through the
 Skill tool is then still noted from the tool call, shown as `Skill tool`;
 one load seen both ways within a minute is one row. A typed `/name` passed
 by that way is not shown.
@@ -191,8 +206,7 @@ claude plugin uninstall prompt-state@nightlab-prompt-state
 ```
 
 Add `--scope project` if you installed it for a project. The install command
-above also added the marketplace `nightlab-prompt-state` to your user
-settings; `claude plugin marketplace remove nightlab-prompt-state` removes it
+above also added the marketplace `nightlab-prompt-state`; `claude plugin marketplace remove nightlab-prompt-state` removes it
 (and uninstalls the plugin with it). These follow Claude Code's
 [plugin docs](https://code.claude.com/docs/en/discover-plugins); they were
 not run by this repo's tests.
@@ -219,7 +233,8 @@ what to install; it never skips.
 That runs `claude plugin validate .`, `claude plugin test .` (35 tests with
 mocked turn, tool and skill events), a type check with `tsc --noEmit`
 against Claude Code's declarations, a checklist of rules that Anthropic's
-plugin directory raised on earlier submissions, and a check that the
+plugin directory raised on three earlier submissions (`tests/checklist.py`
+names the three and each rule's source), and a check that the
 version string agrees in plugin.json, marketplace.json, package.json and
 CHANGELOG.md. It exits non-zero if any step fails. Changes are listed in
 [CHANGELOG.md](CHANGELOG.md).

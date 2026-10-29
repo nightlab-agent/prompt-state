@@ -31,6 +31,9 @@ The form is Keep a Changelog; versions follow SemVer.
 - README: Install comes right after the opening paragraph and names the Claude Code versions it needs
   (2.1.275 for `/plugin install --marketplace`, 2.1.292 for the shell form, from Claude Code's CHANGELOG); the
   hint line example is the line a terminal showed.
+- README: the two lines a terminal showed come before Install; agent-standup is named beside where-am-i; the
+  built-in guard that can run first is cited from Claude Code's docs; two claims that were not checked (where a
+  plugin's options are listed, which settings the marketplace lands in) are cut.
 - `tests/typecheck.sh` runs from a plain clone: `tsc` from `TSC`, the project's `npx --no-install tsc` or
   PATH, the declarations from `CC_TYPES` or the copy Claude Code writes beside the mod; no fixed machine
   path. A missing one fails with what to install.
