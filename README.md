@@ -34,8 +34,12 @@ The same from a shell (Claude Code 2.1.292 or later):
 claude plugin install prompt-state --marketplace nightlab-agent/prompt-state
 ```
 
-For one run without installing, clone the repo and start Claude Code with
-`--plugin-dir <path to the clone>`.
+For one run without installing:
+
+```
+git clone https://github.com/nightlab-agent/prompt-state
+claude --plugin-dir prompt-state
+```
 
 Send any prompt: once the turn ends, the notice and the hint line entry under
 the prompt show `✅ done`. Both have been seen in a terminal; the
@@ -138,8 +142,7 @@ flag, so it never shows `done` while a turn runs.
 
 Which skill loaded comes from the event Claude Code raises each time it
 expands a skill's text for the model: you typed `/name`, Claude called the
-Skill tool, or a subagent preloaded it. A skill call that a rule or hook
-refused never expands, so it is never shown. A skill is known by its plugin
+Skill tool, or a subagent preloaded it. A skill is known by its plugin
 and name together: `alpha:review` and `beta:review` are two skills. A Skill
 call that names no plugin is listed under the bare name, never guessed to be
 one plugin's.
@@ -147,8 +150,7 @@ one plugin's.
 Another plugin's hook can run first and answer an event without passing it
 on. Claude Code's built-in guard, `cc-plugin-sec-default`, runs before
 the mods you install where an organization manages Claude Code or the login is
-a Team or Enterprise one ([the order mods run in](https://code.claude.com/docs/en/plugins/mods/events.md#the-order-mods-run-in));
-it did this in `-p` sessions on a Team account. A skill load that came through the
+a Team or Enterprise one ([the order mods run in](https://code.claude.com/docs/en/plugins/mods/events.md#the-order-mods-run-in)); A skill load that came through the
 Skill tool is then still noted from the tool call, shown as `Skill tool`;
 one load seen both ways within a minute is one row. A typed `/name` passed
 by that way is not shown.
@@ -174,7 +176,7 @@ the events Claude Code hands it.
 | `skill.prompt` | Notes the skill's name, where it came from and the time. | Nothing: the skill's text goes on untouched. |
 | `session.start` | Registers the `/skills-used` command. | Nothing. |
 | `command.run` (`/skills-used`) | Prints the session's list of skill loads. | Nothing. |
-| `ui.render` (`PromptHint`) | Adds the glyph and word to the hint line under the prompt (seen in a terminal as `✅ done` and `❓ your turn`). | The hint line gains that text; nothing else is drawn differently. |
+| `ui.render` (`PromptHint`) | Adds the glyph and word to the hint line under the prompt (seen in a terminal as `✅ done` and `❓ your turn`). | The hint line gains that text. |
 
 ## What it does not do
 

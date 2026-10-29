@@ -34,6 +34,7 @@ The form is Keep a Changelog; versions follow SemVer.
 - README: the two lines a terminal showed come before Install; agent-standup is named beside where-am-i; the
   built-in guard that can run first is cited from Claude Code's docs; two claims that were not checked (where a
   plugin's options are listed, which settings the marketplace lands in) are cut.
+- README: the one-run try is a copy-paste block; three more unchecked claims are cut.
 - `tests/typecheck.sh` runs from a plain clone: `tsc` from `TSC`, the project's `npx --no-install tsc` or
   PATH, the declarations from `CC_TYPES` or the copy Claude Code writes beside the mod; no fixed machine
   path. A missing one fails with what to install.
