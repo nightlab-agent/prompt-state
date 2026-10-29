@@ -9,23 +9,27 @@ or is waiting for you
 With many skills installed there is also no lasting sign of which one is in
 play ([anthropics/claude-code#16078](https://github.com/anthropics/claude-code/issues/16078)).
 This mod (a plugin that changes how Claude Code draws things) adds one entry
-at the end of the hint line under the prompt, and puts both facts in the
-status line. It writes no file. Nothing leaves your machine.
+at the end of the hint line under the prompt, and pins a notice under the
+prompt with both facts. It writes no file. Nothing leaves your machine.
 
-What it looks like, written out. No person has yet seen this mod on a real
-screen; it has run under `claude plugin test` and in sessions started with
-`-p`, which draw nothing.
-
-The hint line under the prompt:
+What it looks like. The notice under the prompt has been seen on a real
+screen once; Claude Code put the mod's name in front of the text:
 
 ```
-? for shortcuts · ✅ done · 1 agent working
+⚠ prompt-state: ✅ done
 ```
 
-The status line:
+With a skill loaded, the text the mod hands to that notice is, for example:
 
 ```
 ⏳ working · skill: commit (3 this session)
+```
+
+The hint line entry, written out (not yet confirmed on a real screen; the
+tests check the text the mod adds):
+
+```
+? for shortcuts · ✅ done · 1 agent working
 ```
 
 | Shown | When |
@@ -37,7 +41,7 @@ The status line:
 | `⏹ stopped` | You interrupted the turn. |
 | `❌ error` | The turn ended on an API error or a refusal. |
 | `n agents working` | Subagent or teammate turns are running. |
-| `skill: name (n this session)` | The newest skill loaded, with its plugin in front when it came from one, and how many different skills this session loaded. Status line only. |
+| `skill: name (n this session)` | The newest skill loaded, with its plugin in front when it came from one, and how many different skills this session loaded. In the notice only. |
 | nothing | The session has not run a turn or loaded a skill yet. |
 
 ## Install
@@ -57,12 +61,25 @@ claude plugin install prompt-state --marketplace nightlab-agent/prompt-state
 For one run without installing, clone the repo and start Claude Code with
 `--plugin-dir <path to the clone>`.
 
-Send any prompt: the entry should then show under the prompt when the turn
-starts. Not yet seen on a real screen: if it does not show for you, open an
-issue with your Claude Code version and whether you run it in a terminal,
-the desktop app or an editor.
+Send any prompt: the notice and the hint line entry should then show under
+the prompt when the turn starts. The hint line entry is not yet confirmed on
+a real screen: if either does not show for you, open an issue with your
+Claude Code version and whether you run it in a terminal, the desktop app or
+an editor.
 
 If you used skill-status, uninstall it: this mod now does what it did.
+
+## Next to where-am-i
+
+[where-am-i](https://github.com/hamzafer/claude-code-mods) (in
+hamzafer/claude-code-mods) also shows what Claude Code is doing and what waits
+on you. It writes that summary with a Haiku model call after each turn; this
+mod makes no model call and reads the state straight from Claude Code's
+events, including a `tool.check` hook for permission asks, which where-am-i
+does not register. where-am-i does not track skills; this mod shows the last
+one loaded and lists them on `/skills-used`. (Read from its README and
+`mods/where-am-i/hooks/register.tsx` on 2026-10-29.) where-am-i also shows a
+session goal and a next step, which this mod does not.
 
 ## Every skill this session loaded
 
@@ -120,7 +137,7 @@ by that way is not shown.
 No file and no setting. The state (the phase, which questions and asks are
 still open, and the session's skill loads) is kept in Claude Code's own
 per-session plugin state. A second note of a skill load already noted
-stores nothing and does not redraw the status line.
+stores nothing and does not redraw the notice.
 
 ## What each hook does
 
@@ -155,14 +172,43 @@ the events Claude Code hands it.
 - A missed turn end (another plugin's hook passing it by) can leave the
   entry one step behind until the next turn.
 - Which surfaces (terminal, desktop app, an editor) draw the hint line entry
-  and the status line is not yet seen on a real screen. A surface with no
-  status line still has `/skills-used`.
+  and the notice is not yet known: the notice has been seen on one real
+  screen, the hint line entry on none. A surface that draws no notice still
+  has `/skills-used`.
+
+## Remove it
+
+At the Claude Code prompt, `/plugin uninstall prompt-state`, or from a shell:
+
+```
+claude plugin uninstall prompt-state@nightlab-prompt-state
+```
+
+Add `--scope project` if you installed it for a project. The install command
+above also added the marketplace `nightlab-prompt-state` to your user
+settings; `claude plugin marketplace remove nightlab-prompt-state` removes it
+(and uninstalls the plugin with it). These follow Claude Code's
+[plugin docs](https://code.claude.com/docs/en/discover-plugins); they were
+not run by this repo's tests.
+
+There is no file of the mod's own to delete: it writes none, and what it
+keeps lives in Claude Code's per-session plugin state. If you ran it from a
+clone with `--plugin-dir`, Claude Code wrote its type declarations
+(`.claude-plugin/types/`) and a `tsconfig.json` into that clone; git ignores
+both, and deleting the clone removes them.
 
 ## Checking it
 
 ```
 sh tests/release.sh
 ```
+
+It needs `claude` on PATH, Python 3, TypeScript (`npm install --save-dev
+typescript`, or set `TSC` to a `tsc`) and Claude Code's type declarations
+(written to `.claude-plugin/types/claude-code/index.d.ts` when you start one
+session with `claude --plugin-dir .` from the clone, or set `CC_TYPES` to
+that file). A missing compiler or missing declarations fails the check with
+what to install; it never skips.
 
 That runs `claude plugin validate .`, `claude plugin test .` (35 tests with
 mocked turn, tool and skill events), a type check with `tsc --noEmit`

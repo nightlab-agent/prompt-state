@@ -101,19 +101,19 @@ test('listText keeps the order of loads, oldest first', () => {
 
 test('a Skill tool call the engine passed by is still noted (0.1.1)', async ($, on) => {
   const { statuses } = world(on)
-  await $.tool.call({ tool: 'Skill', skill: 'icm-ops:icm-verifier', args: 'check' })
-  expect(statuses.at(-1)).toBe('skill: icm-ops:icm-verifier (1 this session)')
+  await $.tool.call({ tool: 'Skill', skill: 'docs-kit:lint', args: 'check' })
+  expect(statuses.at(-1)).toBe('skill: docs-kit:lint (1 this session)')
   const r = await $.command.run({ command: 'skills-used', args: '', ...RUN })
-  expect(r.text).toContain('icm-ops:icm-verifier  (Skill tool)')
+  expect(r.text).toContain('docs-kit:lint  (Skill tool)')
 })
 
 test('one load seen both ways is one row, the engine note kept', async ($, on) => {
   world(on)
-  await $.skill.prompt({ skill: 'icm-verifier', text: 'a', source: 'plugin', pluginName: 'icm-ops' })
-  await $.tool.call({ tool: 'Skill', skill: 'icm-ops:icm-verifier' })
+  await $.skill.prompt({ skill: 'lint', text: 'a', source: 'plugin', pluginName: 'docs-kit' })
+  await $.tool.call({ tool: 'Skill', skill: 'docs-kit:lint' })
   const r = await $.command.run({ command: 'skills-used', args: '', ...RUN })
   expect(r.text).toContain('1 loads of 1 skills')
-  expect(r.text).toContain('icm-verifier  (plugin icm-ops)')
+  expect(r.text).toContain('lint  (plugin docs-kit)')
 })
 
 test('a refused or failed Skill call and other tools are not noted', async ($, on) => {
@@ -164,12 +164,12 @@ test('noteLoad: beta:review 30 seconds after alpha:review stays a load of its ow
 
 test('a second note of the same load within a minute writes nothing and draws nothing', async ($, on) => {
   const { statuses, writes } = world(on)
-  await $.skill.prompt({ skill: 'icm-verifier', text: 'a', source: 'plugin', pluginName: 'icm-ops' })
+  await $.skill.prompt({ skill: 'lint', text: 'a', source: 'plugin', pluginName: 'docs-kit' })
   const [shown, written] = [statuses.length, writes.length]
   expect(shown).toBe(1)
   // the same load again from the engine, and through the Skill tool
-  await $.skill.prompt({ skill: 'icm-verifier', text: 'a', source: 'plugin', pluginName: 'icm-ops' })
-  await $.tool.call({ tool: 'Skill', skill: 'icm-ops:icm-verifier' })
+  await $.skill.prompt({ skill: 'lint', text: 'a', source: 'plugin', pluginName: 'docs-kit' })
+  await $.tool.call({ tool: 'Skill', skill: 'docs-kit:lint' })
   expect(statuses.length).toBe(shown)
   expect(writes.length).toBe(written)
   // the same array comes back, not a copy

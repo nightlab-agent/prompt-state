@@ -24,6 +24,16 @@ The form is Keep a Changelog; versions follow SemVer.
 - A repeat note of a load already noted, and a call settling with nothing of its own open, store nothing and
   do not redraw the status line (before, each stored the same value again and redrew).
 
+### Changed
+- README: the second line is described as what it is on screen, a notice Claude Code pins under the prompt
+  (seen once as `⚠ prompt-state: ✅ done`), not a status line; it says how this differs from where-am-i
+  and how to remove the mod.
+- `tests/typecheck.sh` runs from a plain clone: `tsc` from `TSC`, the project's `npx --no-install tsc` or
+  PATH, the declarations from `CC_TYPES` or the copy Claude Code writes beside the mod; no fixed machine
+  path. A missing one fails with what to install.
+- The repo's maintainer notes (`CLAUDE.md`, `00-catalog/`, `01-context/`, `04-memory/`) and the checklist's
+  comments are in plain words.
+
 This is a minor version: a new option, a new command and a new stored value.
 
 ## 0.1.6 - 2026-10-29 - a question stays open until you answer it
@@ -53,7 +63,7 @@ This is a minor version: a new option, a new command and a new stored value.
 - The release script runs the plugin directory checklist (`tests/checklist.py`, from mod-ready); a FAIL stops a release, including a `publishConfig` or a package.json repository that is not the plugin's own GitHub repo.
 - `tests/typecheck.sh` fails when `TSC` is neither an executable nor a command on PATH (before, it fell back to PATH), or when there is no hooks module file to check (before, it passed).
 - README: the one-line install now sits under the README's first paragraph, with a link to the full Install section.
-- package.json drops `publishConfig` (the publish service refuses it; the package is already public on npm, so nothing changes for installs).
+- package.json drops `publishConfig` (it can send the package to another registry or access level; the package is already public on npm, so nothing changes for installs).
 - The release script type-checks the hooks module, its tests and the state contract with `tsc --noEmit` against the
   engine's own declarations (`tests/typecheck.sh`, the compiler options the declarations' header gives a hooks module).
   No `tsc` or no declarations fails the release script; it never skips.
@@ -70,7 +80,7 @@ This is a minor version: a new option, a new command and a new stored value.
 ## 0.1.3 - 2026-10-28 - credits the agent's creator
 
 ### Changed
-- README: the credit line names the agent's creator, X Infinite. package.json author is `Nightlab`.
+- README: the credit line names the agent's creator, xnfinite. package.json author is `Nightlab`.
 
 ## 0.1.2 - 2026-10-28 - says what each hook does, and that nothing leaves the machine
 

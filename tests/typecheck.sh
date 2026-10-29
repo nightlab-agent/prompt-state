@@ -1,33 +1,46 @@
 #!/bin/sh
-# Type-check the hooks module, its tests and the mod's contract against the
-# engine's own declarations (tsc --noEmit, the options the engine's types
-# header gives a hooks module). The declarations come from, in order:
-# CC_TYPES; the copy the engine lays beside a loaded mod
-# (.claude-plugin/types/claude-code/index.d.ts); /nightlab/tools/cc-types/current.
-# tsc comes from TSC (a path or a command on PATH; anything else FAILS), else /nightlab/tools, then PATH.
-# No hooks module file (tests and .d.ts do not count) is a FAIL. Missing types or a missing tsc is a
-# FAIL, never a skip. Run from the repo root: sh tests/typecheck.sh
+# Type-check the hooks module, its tests and the state contract against the engine's own
+# declarations (tsc --noEmit, with the options the declarations' header gives a hooks module).
+# Run from anywhere: sh tests/typecheck.sh
+#
+# Needs two things; a missing one FAILS with what to install, it never skips:
+# - the engine's declarations: CC_TYPES if set, else the file Claude Code writes beside
+#   a mod each time it loads it from your own folder,
+#   .claude-plugin/types/claude-code/index.d.ts (load this mod once with
+#   `claude --plugin-dir .`, or set CC_TYPES to that file in another mod);
+# - TypeScript: TSC if set (a path, or a command on PATH), else the project's own
+#   `npx --no-install tsc`, else `tsc` on PATH.
+#   Install: npm install --save-dev typescript   (or: npm install -g typescript)
+# No hooks module file (tests and .d.ts do not count) is a FAIL too.
 set -e
 cd "$(dirname "$0")/.."
-types="${CC_TYPES:-}"
-[ -n "$types" ] || { [ -f .claude-plugin/types/claude-code/index.d.ts ] && types=.claude-plugin/types/claude-code/index.d.ts; }
-[ -n "$types" ] || types=/nightlab/tools/cc-types/current/claude-code.d.ts
-[ -f "$types" ] || { echo "typecheck: FAIL, no engine types at $types (set CC_TYPES)"; exit 1; }
+types="${CC_TYPES:-.claude-plugin/types/claude-code/index.d.ts}"
+[ -f "$types" ] || {
+  echo "typecheck: FAIL, no engine declarations at $types."
+  echo "  Claude Code writes them when it loads this mod: run 'claude --plugin-dir .' once from here,"
+  echo "  or set CC_TYPES to a .claude-plugin/types/claude-code/index.d.ts from another mod."
+  exit 1
+}
 if [ -n "${TSC:-}" ]; then
   tsc="$(command -v "$TSC" || true)"
   [ -n "$tsc" ] && [ -x "$tsc" ] || { echo "typecheck: FAIL, TSC=$TSC is not an executable or a command on PATH"; exit 1; }
+  set -- "$tsc"
+elif command -v npx >/dev/null 2>&1 && npx --no-install tsc --version >/dev/null 2>&1; then
+  set -- npx --no-install tsc
+elif command -v tsc >/dev/null 2>&1; then
+  set -- tsc
 else
-  tsc=/nightlab/tools/node_modules/.bin/tsc
-  [ -x "$tsc" ] || tsc="$(command -v tsc || true)"
+  echo "typecheck: FAIL, no TypeScript compiler. Install it: npm install --save-dev typescript"
+  echo "  (or npm install -g typescript), or set TSC to a tsc executable."
+  exit 1
 fi
-[ -n "$tsc" ] || { echo "typecheck: FAIL, no tsc (npm install typescript, or set TSC)"; exit 1; }
 files=$(ls hooks/*.ts hooks/*.tsx types/*.d.ts 2>/dev/null || true)
 echo "$files" | grep '^hooks/' | grep -v -E '\.test\.tsx?$|\.d\.ts$' | grep -q . || { echo "typecheck: FAIL, no hooks module (hooks/*.ts or *.tsx other than tests and .d.ts) to check"; exit 1; }
 # Claude Code lays a tsconfig.json beside a loaded mod (git ignores it); tsc 7 refuses to run with files on
 # the command line while one is present, so an untracked one is told to be ignored.
 extra=""
 if [ -f tsconfig.json ] && ! git ls-files --error-unmatch tsconfig.json >/dev/null 2>&1; then extra="--ignoreConfig"; fi
-"$tsc" --noEmit $extra --target es2023 --lib es2023 --types "" --module esnext \
+"$@" --noEmit $extra --target es2023 --lib es2023 --types "" --module esnext \
   --moduleResolution bundler --strict --noUncheckedIndexedAccess --skipLibCheck \
   --jsx react --jsxFactory h --jsxFragmentFactory Fragment "$types" $files
 echo "typecheck: tsc --noEmit passed against $(head -1 "$types" | sed 's,^// ,,')"

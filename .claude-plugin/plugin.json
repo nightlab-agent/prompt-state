@@ -10,7 +10,6 @@
   "license": "MIT",
   "keywords": [
     "claude-code-mod",
-    "status-line",
     "prompt",
     "notifications",
     "agents",
@@ -20,7 +19,7 @@
     "skills": {
       "type": "boolean",
       "title": "Track skills",
-      "description": "Show the skill Claude loaded last in the status line and list the session's skills on /skills-used. Turn off to show only what Claude is doing.",
+      "description": "Show the skill Claude loaded last in the notice under the prompt and list the session's skills on /skills-used. Turn off to show only what Claude is doing.",
       "default": true
     }
   }

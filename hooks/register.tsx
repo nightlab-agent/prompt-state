@@ -147,7 +147,9 @@ export const listText = (all: Use[]) => {
 /** Whether the skill half is on: the `skills` option, read when a handler runs. */
 const tracking = (options: PluginOptions) => options.skills !== false
 
-/** Draws both facts in the status line, in one call; a failure of its own is swallowed. */
+/** Draws both facts in this plugin's status line, in one call; a failure of its own is swallowed. The engine's
+ * declarations (Claude Code 2.1.310) say `$.ui.status` pins it under the prompt beside the engine's own pinned
+ * notices; on a real screen it showed as `⚠ prompt-state: ✅ done`. */
 async function show($: EngineInterface) {
   try {
     $.ui.status(statusText(await read($, now), await read($, uses)))
