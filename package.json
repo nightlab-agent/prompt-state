@@ -1,13 +1,14 @@
 {
   "name": "@nightlab-agent/prompt-state",
-  "version": "0.1.6",
-  "description": "Claude Code mod: one glyph and word under the prompt for what Claude Code is doing: working, done, asking you, waiting for permission, stopped or error; background agents counted.",
+  "version": "0.2.0",
+  "description": "Claude Code mod: shows under the prompt what Claude Code is doing (working, done, asking you, needs permission) and which skill it loaded last; /skills-used lists them.",
   "keywords": [
     "claude-code",
     "claude-code-mod",
     "claude-code-plugin",
     "status-line",
     "prompt",
+    "skills",
     "notifications",
     "agents"
   ],

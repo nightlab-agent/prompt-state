@@ -271,3 +271,13 @@ test('a phase an earlier version stored is declined: the hint line draws nothing
   expect(tails.at(-1)).toBeUndefined()
   await ui.unmount()
 })
+
+test('collision, out of order: a late end of an earlier main turn leaves the newer turn working', async ($, on) => {
+  const { statuses } = world(on)
+  await start($, 't1')
+  await start($, 't2')
+  await end($, 't1', 'Shall I go on?')
+  expect(statuses.at(-1)).toBe('⏳ working')
+  await end($, 't2', 'Done.')
+  expect(statuses.at(-1)).toBe('✅ done')
+})

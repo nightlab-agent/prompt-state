@@ -4,6 +4,28 @@ The form is Keep a Changelog; versions follow SemVer.
 
 ## [Unreleased]
 
+## 0.2.0 - 2026-10-29 - absorbs skill-status
+
+### Added
+- Absorbs skill-status: the skill Claude loaded last shows in the status line beside what Claude is doing, in
+  one string (`⏳ working · skill: commit (3 this session)`, at most 120 characters), and `/skills-used` lists
+  every load of the session with its time and where it came from. A load is noted from two events,
+  `skill.prompt` and a successful Skill tool call; one load seen both ways within a minute is one row. A skill
+  is known by its plugin and name together, so `alpha:review` and `beta:review` are two. One mod instead of
+  two; skill-status stays as it was and points here.
+- The `skills` option ("Track skills", on by default). Off, the mod notes no skill and `/skills-used` says
+  skill tracking is off. It is read when each hook runs.
+
+### Fixed
+- A turn end that arrives after a newer main turn started no longer sets `done` over the running turn (the
+  stored state keeps the running turn's id, tag `now-3`; a value stored by an earlier version is declined).
+- A skill note stamped earlier that is stored after a newer one is put before it, so the newest load stays
+  the one shown.
+- A repeat note of a load already noted, and a call settling with nothing of its own open, store nothing and
+  do not redraw the status line (before, each stored the same value again and redrew).
+
+This is a minor version: a new option, a new command and a new stored value.
+
 ## 0.1.6 - 2026-10-29 - a question stays open until you answer it
 
 ### Fixed

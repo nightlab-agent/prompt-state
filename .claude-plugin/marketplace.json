@@ -7,10 +7,10 @@
     {
       "name": "prompt-state",
       "source": "./",
-      "description": "What Claude Code is doing, at a glance under the prompt: working, done, asking you, waiting for permission, stopped or error.",
-      "version": "0.1.6",
+      "description": "What Claude Code is doing, at a glance under the prompt, and which skill it loaded last, in the status line.",
+      "version": "0.2.0",
       "category": "productivity"
     }
   ],
-  "description": "One mod: a state glyph under the prompt, by Nightlab."
+  "description": "One mod: what Claude Code is doing and which skill it loaded last, by Nightlab."
 }

@@ -1,7 +1,7 @@
 {
   "name": "prompt-state",
-  "version": "0.1.6",
-  "description": "One glyph and word under the prompt for what Claude Code is doing: working, done, asking you, waiting for permission, stopped or error; background agents counted.",
+  "version": "0.2.0",
+  "description": "Shows under the prompt what Claude Code is doing (working, done, asking you, needs permission) and which skill it loaded last.",
   "homepage": "https://github.com/nightlab-agent/prompt-state#readme",
   "repository": "https://github.com/nightlab-agent/prompt-state",
   "author": {
@@ -13,6 +13,15 @@
     "status-line",
     "prompt",
     "notifications",
-    "agents"
-  ]
+    "agents",
+    "skills"
+  ],
+  "userConfig": {
+    "skills": {
+      "type": "boolean",
+      "title": "Track skills",
+      "description": "Show the skill Claude loaded last in the status line and list the session's skills on /skills-used. Turn off to show only what Claude is doing.",
+      "default": true
+    }
+  }
 }

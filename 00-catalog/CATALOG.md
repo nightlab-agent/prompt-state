@@ -4,8 +4,8 @@
 |---|---|
 | `CLAUDE.md` | First, always. |
 | `README.md` | You are a user installing it, or checking what it does not do. |
-| `hooks/register.tsx` | You are changing which event moves which state, or what is drawn. |
-| `hooks/register.test.tsx` | You changed the module: the test command in `tests/release.sh` runs it. |
+| `hooks/register.tsx` | You are changing which event moves which state, what skill loads are noted, or what the hint line, status line or `/skills-used` show. |
+| `hooks/register.test.tsx`, `hooks/skills.test.tsx` | You changed the module: the test command in `tests/release.sh` runs both (the phase; the skill half). |
 | `types/index.d.ts` | You changed what is stored: the state contract `validate` checks. |
 | `tests/release.sh` | You are releasing: validate, test, version check; exit non-zero on any failing; `nightlab-release.json` names it. |
 | `CHANGELOG.md` | You are cutting a version: what changed and why. |
