@@ -19,18 +19,21 @@ screen once; Claude Code put the mod's name in front of the text:
 ⚠ prompt-state: ✅ done
 ```
 
-With a skill loaded, the text the mod hands to that notice is, for example:
+With a skill loaded, the text the mod hands to that notice is, for example (not yet
+seen on a real screen; the tests check this text):
 
 ```
 ⏳ working · skill: commit (3 this session)
 ```
 
-The hint line entry, written out (not yet confirmed on a real screen; the
-tests check the text the mod adds):
+The hint line entry, written out (seen on a real screen as `❓ your turn`):
 
 ```
 ? for shortcuts · ✅ done · 1 agent working
 ```
+
+Seen on a real screen so far: `✅ done` and `❓ your turn`. The other rows are checked by
+the tests, not yet seen on a real screen.
 
 | Shown | When |
 |---|---|
@@ -83,7 +86,7 @@ session goal and a next step, which this mod does not.
 
 ## Every skill this session loaded
 
-Type `/skills-used`:
+Type `/skills-used` (this output is not yet seen on a real screen; the tests check it):
 
 ```
 3 loads of 2 skills this session:
@@ -153,7 +156,7 @@ the events Claude Code hands it.
 | `skill.prompt` | Notes the skill's name, where it came from and the time. | Nothing: the skill's text goes on untouched. |
 | `session.start` | Registers the `/skills-used` command. | Nothing. |
 | `command.run` (`/skills-used`) | Prints the session's list of skill loads. | Nothing. |
-| `ui.render` (`PromptHint`) | Adds the glyph and word to the hint line under the prompt (not yet seen on a real screen). | The hint line gains that text; nothing else is drawn differently. |
+| `ui.render` (`PromptHint`) | Adds the glyph and word to the hint line under the prompt (seen on a real screen as `❓ your turn`). | The hint line gains that text; nothing else is drawn differently. |
 
 ## What it does not do
 
