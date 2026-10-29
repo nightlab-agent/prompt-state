@@ -62,7 +62,10 @@ The notice under the prompt has been seen in a terminal; Claude Code put the mod
 ```
 
 With a skill loaded, the notice names it. Seen in the same terminal on 2026-10-29
-after Claude loaded the built-in `simplify` skill (the font again draws `✅` as a box):
+after Claude loaded the built-in `simplify` skill (the font again draws `✅` as a box). In that
+run Claude Code's built-in guard ran first, so the load was noted from the Skill tool call; Claude
+Code printed "prompt-state: its skill.prompt hook was skipped", which is expected there. A typed
+`/name` noted by `skill.prompt` is not yet seen on a real screen.
 
 ![The bottom of Claude Code after a skill loaded: the notice reads done, skill: simplify (1 this session)](https://raw.githubusercontent.com/nightlab-agent/prompt-state/9eba924f5986c964fb6d91c1e74d27a59378606a/docs/preview-skill.png)
 
@@ -77,8 +80,8 @@ last `·`; it has also been seen as `❓ your turn`):
 ⏵⏵ bypass permissions on (shift+tab to cycle) · ✅ done
 ```
 
-Seen on a real screen so far: `✅ done` and `❓ your turn`. The other rows are checked by
-the tests, not yet seen on a real screen.
+Seen on a real screen so far: `✅ done`, `❓ your turn` and `skill: name (n this session)`. The
+other rows are checked by the tests, not yet seen on a real screen.
 
 | Shown | When |
 |---|---|
