@@ -13,4 +13,4 @@ both facts in the notice it pins under the prompt (`$.ui.status`);
 `/skills-used` lists the loads. Rules: every event passed on unchanged, never
 answer a dialog or refuse a call or change a skill's text, no network, no file
 written, a failure of its own is swallowed. `sh tests/release.sh` must pass
-before every push. When work on it stops: see `01-context/purpose.md`.
+before every push. Who it is for: `01-context/purpose.md`.
