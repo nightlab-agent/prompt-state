@@ -9,7 +9,8 @@
     "prompt",
     "skills",
     "notifications",
-    "agents"
+    "agents",
+    "claude-code-statusline"
   ],
   "homepage": "https://github.com/nightlab-agent/prompt-state#readme",
   "bugs": "https://github.com/nightlab-agent/prompt-state/issues",

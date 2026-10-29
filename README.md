@@ -61,11 +61,13 @@ The notice under the prompt has been seen in a terminal; Claude Code put the mod
 ⚠ prompt-state: ✅ done
 ```
 
-With a skill loaded, the text the mod hands to that notice is, for example (not yet
-seen on a real screen; the tests check this text):
+With a skill loaded, the notice names it. Seen in the same terminal on 2026-10-29
+after Claude loaded the built-in `simplify` skill (the font again draws `✅` as a box):
+
+![The bottom of Claude Code after a skill loaded: the notice reads done, skill: simplify (1 this session)](https://raw.githubusercontent.com/nightlab-agent/prompt-state/9eba924f5986c964fb6d91c1e74d27a59378606a/docs/preview-skill.png)
 
 ```
-⏳ working · skill: commit (3 this session)
+⚠ prompt-state: ✅ done · skill: simplify (1 this session)
 ```
 
 The hint line entry, as a terminal showed it (the mod adds the part after the

@@ -16,6 +16,10 @@ The form is Keep a Changelog; versions follow SemVer.
   in the status line. Each expansion Claude Code notes is now a load; a Skill tool note joins only the note made
   while its call ran. Four tests that failed on 0.2.0 now pass.
 
+### Docs
+- The skill part of the notice is now seen on a real screen (terminal, 2026-10-29); the README shows that picture.
+- npm keyword `claude-code-statusline`.
+
 ## 0.2.0 - 2026-10-29 - absorbs skill-status
 
 ### Changed
