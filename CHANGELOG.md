@@ -7,7 +7,7 @@ The form is Keep a Changelog; versions follow SemVer.
 ## 0.2.0 - 2026-10-29 - absorbs skill-status
 
 ### Added
-- Absorbs skill-status: the skill Claude loaded last shows in the status line beside what Claude is doing, in
+- Absorbs skill-status: the skill Claude loaded last shows in the notice under the prompt beside what Claude is doing, in
   one string (`⏳ working · skill: commit (3 this session)`, at most 120 characters), and `/skills-used` lists
   every load of the session with its time and where it came from. A load is noted from two events,
   `skill.prompt` and a successful Skill tool call; one load seen both ways within a minute is one row. A skill
@@ -22,12 +22,15 @@ The form is Keep a Changelog; versions follow SemVer.
 - A skill note stamped earlier that is stored after a newer one is put before it, so the newest load stays
   the one shown.
 - A repeat note of a load already noted, and a call settling with nothing of its own open, store nothing and
-  do not redraw the status line (before, each stored the same value again and redrew).
+  do not redraw the notice (before, each stored the same value again and redrew).
 
 ### Changed
 - README: the second line is described as what it is on screen, a notice Claude Code pins under the prompt
-  (seen once as `⚠ prompt-state: ✅ done`), not a status line; it says how this differs from where-am-i
+  (seen in a terminal as `⚠ prompt-state: ✅ done`), not a status line; it says how this differs from where-am-i
   and how to remove the mod.
+- README: Install comes right after the opening paragraph and names the Claude Code versions it needs
+  (2.1.275 for `/plugin install --marketplace`, 2.1.292 for the shell form, from Claude Code's CHANGELOG); the
+  hint line example is the line a terminal showed.
 - `tests/typecheck.sh` runs from a plain clone: `tsc` from `TSC`, the project's `npx --no-install tsc` or
   PATH, the declarations from `CC_TYPES` or the copy Claude Code writes beside the mod; no fixed machine
   path. A missing one fails with what to install.

@@ -12,8 +12,35 @@ This mod (a plugin that changes how Claude Code draws things) adds one entry
 at the end of the hint line under the prompt, and pins a notice under the
 prompt with both facts. It writes no file. Nothing leaves your machine.
 
-What it looks like. The notice under the prompt has been seen on a real
-screen once; Claude Code put the mod's name in front of the text:
+## Install
+
+One line at the Claude Code prompt:
+
+```
+/plugin install prompt-state --marketplace nightlab-agent/prompt-state
+```
+
+That needs Claude Code 2.1.275 or later. Follow the prompts Claude Code shows.
+The same from a shell (Claude Code 2.1.292 or later):
+
+```
+claude plugin install prompt-state --marketplace nightlab-agent/prompt-state
+```
+
+For one run without installing, clone the repo and start Claude Code with
+`--plugin-dir <path to the clone>`.
+
+Send any prompt: the notice and the hint line entry should then show under
+the prompt when the turn starts. Both have been seen in a terminal; the
+desktop app and editors are not yet seen: if either does not show for you, open an issue with your
+Claude Code version and whether you run it in a terminal, the desktop app or
+an editor.
+
+If you used skill-status, uninstall it: this mod now does what it did.
+
+## What it looks like
+
+The notice under the prompt has been seen in a terminal; Claude Code put the mod's name in front of the text:
 
 ```
 ⚠ prompt-state: ✅ done
@@ -26,10 +53,11 @@ seen on a real screen; the tests check this text):
 ⏳ working · skill: commit (3 this session)
 ```
 
-The hint line entry, written out (seen on a real screen as `❓ your turn`):
+The hint line entry, as a terminal showed it (the mod adds the part after the
+last `·`; it has also been seen as `❓ your turn`):
 
 ```
-? for shortcuts · ✅ done · 1 agent working
+⏵⏵ bypass permissions on (shift+tab to cycle) · ✅ done
 ```
 
 Seen on a real screen so far: `✅ done` and `❓ your turn`. The other rows are checked by
@@ -46,31 +74,6 @@ the tests, not yet seen on a real screen.
 | `n agents working` | Subagent or teammate turns are running. |
 | `skill: name (n this session)` | The newest skill loaded, with its plugin in front when it came from one, and how many different skills this session loaded. In the notice only. |
 | nothing | The session has not run a turn or loaded a skill yet. |
-
-## Install
-
-One line at the Claude Code prompt:
-
-```
-/plugin install prompt-state --marketplace nightlab-agent/prompt-state
-```
-
-Follow the prompts Claude Code shows. The same from a shell:
-
-```
-claude plugin install prompt-state --marketplace nightlab-agent/prompt-state
-```
-
-For one run without installing, clone the repo and start Claude Code with
-`--plugin-dir <path to the clone>`.
-
-Send any prompt: the notice and the hint line entry should then show under
-the prompt when the turn starts. Both have been seen in a terminal; the
-desktop app and editors are not yet seen: if either does not show for you, open an issue with your
-Claude Code version and whether you run it in a terminal, the desktop app or
-an editor.
-
-If you used skill-status, uninstall it: this mod now does what it did.
 
 ## Next to where-am-i
 
@@ -156,7 +159,7 @@ the events Claude Code hands it.
 | `skill.prompt` | Notes the skill's name, where it came from and the time. | Nothing: the skill's text goes on untouched. |
 | `session.start` | Registers the `/skills-used` command. | Nothing. |
 | `command.run` (`/skills-used`) | Prints the session's list of skill loads. | Nothing. |
-| `ui.render` (`PromptHint`) | Adds the glyph and word to the hint line under the prompt (seen on a real screen as `❓ your turn`). | The hint line gains that text; nothing else is drawn differently. |
+| `ui.render` (`PromptHint`) | Adds the glyph and word to the hint line under the prompt (seen in a terminal as `✅ done` and `❓ your turn`). | The hint line gains that text; nothing else is drawn differently. |
 
 ## What it does not do
 
@@ -206,8 +209,8 @@ both, and deleting the clone removes them.
 sh tests/release.sh
 ```
 
-It needs `claude` on PATH, Python 3, TypeScript (`npm install --save-dev
-typescript`, or set `TSC` to a `tsc`) and Claude Code's type declarations
+It needs `claude` on PATH, Python 3, TypeScript (`tsc` on PATH, or set
+`TSC` to a `tsc`) and Claude Code's type declarations
 (written to `.claude-plugin/types/claude-code/index.d.ts` when you start one
 session with `claude --plugin-dir .` from the clone, or set `CC_TYPES` to
 that file). A missing compiler or missing declarations fails the check with

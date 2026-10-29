@@ -10,7 +10,7 @@
 #   `claude --plugin-dir .`, or set CC_TYPES to that file in another mod);
 # - TypeScript: TSC if set (a path, or a command on PATH), else the project's own
 #   `npx --no-install tsc`, else `tsc` on PATH.
-#   Install: npm install --save-dev typescript   (or: npm install -g typescript)
+#   No compiler found: put tsc on PATH or set TSC.
 # No hooks module file (tests and .d.ts do not count) is a FAIL too.
 set -e
 cd "$(dirname "$0")/.."
@@ -30,8 +30,8 @@ elif command -v npx >/dev/null 2>&1 && npx --no-install tsc --version >/dev/null
 elif command -v tsc >/dev/null 2>&1; then
   set -- tsc
 else
-  echo "typecheck: FAIL, no TypeScript compiler. Install it: npm install --save-dev typescript"
-  echo "  (or npm install -g typescript), or set TSC to a tsc executable."
+  echo "typecheck: FAIL, no TypeScript compiler. Put tsc on PATH,"
+  echo "  or set TSC to a tsc executable."
   exit 1
 fi
 files=$(ls hooks/*.ts hooks/*.tsx types/*.d.ts 2>/dev/null || true)
