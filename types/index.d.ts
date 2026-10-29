@@ -11,6 +11,8 @@ export type Now = {
   since: string
   /** What waits on the person: open question dialogs and permission asks, each as `loop|call`. */
   open: { questions: string[]; asks: string[] }
+  /** The main loop's own phase, under whatever waits on the person; shown again when nothing does. */
+  base?: Phase
   /** The running main turn's id (`turn.start`'s `turnId`); a turn end with another id is a late one. */
   turn?: string
 }

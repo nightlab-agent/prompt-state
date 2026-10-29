@@ -4,6 +4,18 @@ The form is Keep a Changelog; versions follow SemVer.
 
 ## [Unreleased]
 
+## 0.2.1 - 2026-10-29 - the right state after a background agent's ask; every skill load counted
+
+### Fixed
+- A background agent's permission ask that settled after the main turn had ended turned `✅ done` into
+  `⏳ working`, and one whose agent ended with the ask unanswered left `🔐 needs permission` on screen. The main
+  loop's own state is now kept apart from what waits on you, and shown again when nothing does. Two tests that
+  failed on 0.2.0 now pass.
+- `/skills-used` merged two loads of one skill made within a minute (a skill typed twice showed once), and a
+  Skill call that finished late (a skill run in its own subagent) could add a second row and name the wrong skill
+  in the status line. Each expansion Claude Code notes is now a load; a Skill tool note joins only the note made
+  while its call ran. Four tests that failed on 0.2.0 now pass.
+
 ## 0.2.0 - 2026-10-29 - absorbs skill-status
 
 ### Changed

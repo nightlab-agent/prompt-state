@@ -143,11 +143,11 @@ test('two plugins\' skills with one name, loaded within a minute, are two loads 
   expect(r.text).toContain('2 loads of 2 skills')
   expect(r.text).toContain('review  (plugin alpha)')
   expect(r.text).toContain('review  (plugin beta)')
-  // the same two through the Skill tool
+  // the same two loads seen again through the Skill tool stay two
   await $.tool.call({ tool: 'Skill', skill: 'alpha:review' })
   await $.tool.call({ tool: 'Skill', skill: 'beta:review' })
   const again = await $.command.run({ command: 'skills-used', args: '', ...RUN })
-  expect(again.text).toContain('4 loads of 2 skills')
+  expect(again.text).toContain('2 loads of 2 skills')
 })
 
 test('noteLoad: beta:review 30 seconds after alpha:review stays a load of its own; the same skill twice is one', () => {
@@ -162,19 +162,20 @@ test('noteLoad: beta:review 30 seconds after alpha:review stays a load of its ow
   expect(identityOf({ at: '', skill: 'commit', source: 'userSettings' })).toBe('commit')
 })
 
-test('a second note of the same load within a minute writes nothing and draws nothing', async ($, on) => {
+test('the Skill tool note of a load the engine noted writes nothing and draws nothing', async ($, on) => {
   const { statuses, writes } = world(on)
   await $.skill.prompt({ skill: 'lint', text: 'a', source: 'plugin', pluginName: 'docs-kit' })
   const [shown, written] = [statuses.length, writes.length]
   expect(shown).toBe(1)
-  // the same load again from the engine, and through the Skill tool
-  await $.skill.prompt({ skill: 'lint', text: 'a', source: 'plugin', pluginName: 'docs-kit' })
+  // the same load through the Skill tool
   await $.tool.call({ tool: 'Skill', skill: 'docs-kit:lint' })
   expect(statuses.length).toBe(shown)
   expect(writes.length).toBe(written)
   // the same array comes back, not a copy
-  const all = [{ at: '2026-10-29T09:00:00Z', skill: 'commit', source: 'userSettings' }]
-  expect(noteLoad(all, { ...all[0]!, at: '2026-10-29T09:00:10Z' })).toBe(all)
+  const all = [{ at: '2026-10-29T09:00:00Z', skill: 'p:x', source: 'plugin', plugin: 'p' }]
+  expect(noteLoad(all, { at: '2026-10-29T09:00:10Z', skill: 'p:x', source: 'Skill tool' })).toBe(all)
+  // comparison: the engine noting the skill again is a second load (the engine notes each expansion)
+  expect(noteLoad(all, { ...all[0]!, at: '2026-10-29T09:00:10Z' }).length).toBe(2)
 })
 
 test('an engine note replaces the tool note of the same load in place, between the loads around it', () => {

@@ -68,12 +68,13 @@ export const STATUS_MAX = 120
 /** What /skills-used answers while the `skills` option is off. */
 export const OFF_TEXT = 'Skill tracking is off (the skills option).'
 
-const START: Now = { phase: 'idle', agents: [], since: new Date(0).toISOString(), open: { questions: [], asks: [] } }
+const START: Now = { phase: 'idle', base: 'idle', agents: [], since: new Date(0).toISOString(), open: { questions: [], asks: [] } }
 
 // Change a tag when its fields change: it declines what an earlier version stored.
 // now-2: Now gained `open`, the questions and asks still waiting on the person.
 // now-3: Now gained `turn`, the running main turn's id, so a late end of an earlier turn is ignored.
-const now = atom({ plugin: 'prompt-state', key: 'now' } as const, START, { shape: 'now-3' })
+// now-4: Now gained `base`, the main loop's own phase, so a background agent's ask cannot erase it.
+const now = atom({ plugin: 'prompt-state', key: 'now' } as const, START, { shape: 'now-4' })
 const uses = atom({ plugin: 'prompt-state', key: 'uses' } as const, [] as Use[], { shape: 'uses-1' })
 
 const stamp = () => new Date().toISOString()
@@ -114,18 +115,26 @@ export const statusText = (s: Now, all: Use[]) =>
   [labelOf(s), statusOf(all)].filter(Boolean).join(' · ').slice(0, STATUS_MAX) || undefined
 
 /** Adds one note to the list, kept in time order (a note stamped earlier that arrives late goes before the
- * newer one, which stays the newest). A note of the same skill within SAME_LOAD_MS of its neighbour is the
- * same load: an engine note replaces a tool note in place; any other repeat returns the same array, so
- * nothing is written and nothing redrawn. */
-export const noteLoad = (all: Use[], use: Use): Use[] => {
+ * newer one, which stays the newest). Each engine note is a load of its own: the engine notes every expansion,
+ * so a skill typed twice is two loads. A Skill tool note is the same load as an engine note of that skill made
+ * while the call ran (from a minute before `use.at`, the call's start, to `until`, its end, or to `use.at`):
+ * the list comes back as the same array, so nothing is written and nothing redrawn. An engine note replaces a
+ * tool-only note of the same skill just before it. */
+export const noteLoad = (all: Use[], use: Use, until?: string): Use[] => {
   const t = Date.parse(use.at)
+  if (use.source === VIA_TOOL) {
+    const [from, to] = [t - SAME_LOAD_MS, until === undefined ? t : Date.parse(until)]
+    const seen = all.some(x => x.source !== VIA_TOOL && identityOf(x) === identityOf(use) && Date.parse(x.at) >= from && Date.parse(x.at) <= to)
+    if (seen) return all
+  }
   let i = all.length
   while (i > 0 && Date.parse(all[i - 1]!.at) > t) i--
-  for (const j of [i - 1, i]) {
-    const x = all[j]
-    if (x && identityOf(x) === identityOf(use) && Math.abs(Date.parse(x.at) - t) <= SAME_LOAD_MS) {
-      // the engine's own note says more (its source, its plugin); a tool note never replaces it
-      return x.source === VIA_TOOL && use.source !== VIA_TOOL ? all.map((y, k) => (k === j ? use : y)) : all
+  if (use.source !== VIA_TOOL) {
+    for (const j of [i - 1, i]) {
+      const x = all[j]
+      if (x && x.source === VIA_TOOL && identityOf(x) === identityOf(use) && Math.abs(Date.parse(x.at) - t) <= SAME_LOAD_MS) {
+        return all.map((y, k) => (k === j ? use : y))
+      }
     }
   }
   return [...all.slice(0, i), use, ...all.slice(i)].slice(-KEEP)
@@ -175,11 +184,11 @@ async function set($: EngineInterface, fn: (s: Now) => Now) {
 }
 
 /** Notes one skill load and shows it; a failure of its own is swallowed. */
-async function note($: EngineInterface, use: Use) {
+async function note($: EngineInterface, use: Use, until?: string) {
   try {
     const before = await read($, uses)
-    if (noteLoad(before, use) === before) return
-    await update($, uses, xs => noteLoad(xs, use))
+    if (noteLoad(before, use, until) === before) return
+    await update($, uses, xs => noteLoad(xs, use, until))
     await show($)
   } catch {
     // the indicator misses one load; the skill's text or the call's result is untouched
@@ -203,15 +212,16 @@ export const settle = (s: Now, keys: string[]): Now => {
   // nothing of this call was open: the same value, so nothing is written
   const open = s.open.questions.some(hit) || s.open.asks.some(hit) ? { questions: without(s.open.questions, keys), asks: without(s.open.asks, keys) } : s.open
   const next = open === s.open ? s : { ...s, open }
-  if (open.questions.length > 0) return enter(next, 'question')
-  if (open.asks.length > 0) return enter(next, 'permission')
-  return s.phase === 'permission' || s.phase === 'question' ? enter(next, 'working') : next
+  return overlay(next)
 }
+
+/** The main loop's own phase; a value stored before `base` existed reads a person's phase as working. */
+const baseOf = (s: Now): Phase => s.base ?? (s.phase === 'permission' || s.phase === 'question' ? 'working' : s.phase)
 
 /** The phase with what is still open laid over it: an open question or ask keeps the person's turn whatever
  * the main loop just did (a background agent's dialog waits on you while the main turn is done). */
 export const overlay = (s: Now): Now =>
-  s.open.questions.length > 0 ? enter(s, 'question') : s.open.asks.length > 0 ? enter(s, 'permission') : s
+  enter(s, s.open.questions.length > 0 ? 'question' : s.open.asks.length > 0 ? 'permission' : baseOf(s))
 
 /** Drops a loop's open calls: the main loop's at a new main turn (nothing of its waits on the person any
  * more), a subagent's when its turn ends (a dialog it never settled must not stick for the session). */
@@ -221,11 +231,11 @@ export const dropLoop = (s: Now, loop: string): Now => {
 }
 
 /** A new main turn: the main loop is working; a subagent's open ask still shows. */
-export const newMainTurn = (s: Now, turn?: string): Now => overlay(enter({ ...dropLoop(s, 'main'), turn }, 'working'))
+export const newMainTurn = (s: Now, turn?: string): Now => overlay({ ...dropLoop(s, 'main'), turn, base: 'working' })
 
 /** A main turn's end: the phase it leaves, unless a newer main turn has started since (a late end). */
 export const endMainTurn = (s: Now, turn: string | undefined, phase: Phase): Now =>
-  s.turn !== undefined && turn !== undefined && turn !== s.turn ? s : overlay(enter(s, phase))
+  s.turn !== undefined && turn !== undefined && turn !== s.turn ? s : overlay({ ...s, base: phase })
 
 export const register: Register = (on, options) => {
   // What waits on the person is kept in the stored state beside the phase, keyed by the call. A
@@ -242,7 +252,7 @@ export const register: Register = (on, options) => {
   on('turn.complete', async ($, e, next) => {
     const r = await next(e)
     const id = e.agentId
-    await set($, s => (id === undefined ? endMainTurn(s, e.turnId, afterTurn(String(e.reason), e.answer ?? '')) : { ...dropLoop(s, id), agents: s.agents.filter(a => a !== id) }))
+    await set($, s => (id === undefined ? endMainTurn(s, e.turnId, afterTurn(String(e.reason), e.answer ?? '')) : overlay({ ...dropLoop(s, id), agents: s.agents.filter(a => a !== id) })))
     return r
   })
 
@@ -258,6 +268,7 @@ export const register: Register = (on, options) => {
 
   on('tool.call', async ($, e, next) => {
     const key = callKey(e)
+    const began = stamp()
     if (ASKING_TOOLS.has(e.tool)) {
       await set($, s => enter({ ...s, open: { ...s.open, questions: s.open.questions.includes(key) ? s.open.questions : [...s.open.questions, key].slice(-50) } }, 'question'))
     }
@@ -273,7 +284,7 @@ export const register: Register = (on, options) => {
     if (e.tool === 'Skill' && tracking(options) && r.deny === undefined && r.isError !== true) {
       try {
         const name = (e as unknown as Record<string, unknown>).skill
-        if (typeof name === 'string' && name) await note($, { at: stamp(), skill: name.replace(/^\//, ''), source: VIA_TOOL })
+        if (typeof name === 'string' && name) await note($, { at: began, skill: name.replace(/^\//, ''), source: VIA_TOOL }, stamp())
       } catch {
         // the indicator misses one load; the call's result is untouched
       }

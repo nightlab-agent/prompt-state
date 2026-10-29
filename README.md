@@ -140,7 +140,8 @@ it ended), a permission decision that a person has to answer, and a call of
 a question tool. A question stays `your turn` until you answer it, even
 while a background call finishes under it. A permission ask stays until the
 call it was about settles, whether that call is the main loop's or a
-background agent's. A turn end that arrives after a newer turn started is
+background agent's; then the line goes back to what the main loop was doing
+(`done`, if its turn had ended meanwhile). A turn end that arrives after a newer turn started is
 ignored. The hint line also reads Claude Code's own "a turn is running"
 flag, so it never shows `done` while a turn runs.
 
@@ -156,7 +157,8 @@ on. Claude Code's built-in guard, `cc-plugin-sec-default`, runs before
 the mods you install where an organization manages Claude Code or the login is
 a Team or Enterprise one ([the order mods run in](https://code.claude.com/docs/en/plugins/mods/events.md#the-order-mods-run-in)); A skill load that came through the
 Skill tool is then still noted from the tool call, shown as `Skill tool`;
-one load seen both ways within a minute is one row. A typed `/name` passed
+a load seen both ways (the engine's note made while that Skill call ran, or
+in the minute before it) is one row, and a skill typed twice is two loads. A typed `/name` passed
 by that way is not shown.
 
 ## What it writes
@@ -236,10 +238,10 @@ session with `claude --plugin-dir .` from the clone, or set `CC_TYPES` to
 that file). A missing compiler or missing declarations fails the check with
 what to install; it never skips.
 
-That runs `claude plugin validate .`, `claude plugin test .` (35 tests with
+That runs `claude plugin validate .`, `claude plugin test .` (52 tests with
 mocked turn, tool and skill events), a type check with `tsc --noEmit`
-against Claude Code's declarations, a checklist of rules that Anthropic's
-plugin directory raised on three earlier submissions (`tests/checklist.py`
+against Claude Code's declarations, a checklist of rules learned from three
+earlier submissions to Anthropic's plugin directory (`tests/checklist.py`
 names the three and each rule's source), and a check that the
 version string agrees in plugin.json, marketplace.json, package.json and
 CHANGELOG.md. It exits non-zero if any step fails. Changes are listed in

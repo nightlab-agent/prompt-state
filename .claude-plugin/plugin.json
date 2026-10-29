@@ -1,6 +1,6 @@
 {
   "name": "prompt-state",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Shows under the prompt what Claude Code is doing (working, done, asking you, needs permission) and which skill it loaded last.",
   "homepage": "https://github.com/nightlab-agent/prompt-state#readme",
   "repository": "https://github.com/nightlab-agent/prompt-state",
