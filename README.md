@@ -1,24 +1,18 @@
 # prompt-state
 
-**For Claude Code users who run long turns or background agents and keep
-looking back to check whether Claude is still working or waiting for them.**
+Shows whether Claude Code is working, done or waiting on you.
 
-<!-- top-install -->
-```
-/plugin install prompt-state --marketplace nightlab-agent/prompt-state
-```
-
-At the Claude Code prompt. More ways, npm included: [Install](#install).
-
-A Claude Code mod that says, at a glance under the prompt, what Claude Code
-is doing: working, done, asking you, waiting for permission, stopped or
-blocked by an error, and how many background agents are still running.
-
-The prompt looks the same whatever state the session is in, so during long
-turns it is hard to tell whether Claude is still working or waiting for you
+Claude Code's prompt looks the same whatever the session is doing, so during
+a long turn it is hard to tell whether Claude is still working, has finished,
+or is waiting for you to answer something
 ([anthropics/claude-code#21894](https://github.com/anthropics/claude-code/issues/21894)).
-This mod adds one dim entry at the end of the hint line under the prompt,
-and the same words in the status line:
+This mod (a plugin that changes how Claude Code draws things) adds one
+entry at the end of the hint line under the prompt, and the same words in
+the status line. It changes nothing else. Nothing leaves your machine.
+
+What it looks like, written out. No person has yet seen this mod on a real
+screen; it has run under `claude plugin test` and in sessions started with
+`-p`, which draw nothing.
 
 ```
 ? for shortcuts · ✅ done · 1 agent working
@@ -36,81 +30,94 @@ and the same words in the status line:
 
 `n agents working` is added while subagent or teammate turns are running.
 
-## How it knows
-
-From the engine's own events, nothing guessed from the screen:
-`turn.start` and `turn.complete` (with the reason the turn ended),
-`tool.check` (a verdict of "ask" that a person answers) and `tool.call`
-(a question tool's call, open until you answer it). The hint line also
-reads the engine's own "a turn is running" flag, so it never shows `done`
-while a turn runs.
-
 ## Install
 
-1. In a Claude Code session, run:
-   ```
-   /plugin install prompt-state --marketplace nightlab-agent/prompt-state
-   ```
-2. Answer `y` to add the marketplace, and pick the user scope.
-3. Send any prompt: the entry appears under the prompt when the turn starts.
+One line at the Claude Code prompt:
 
-From npm: the same plugin files are published as
-[`@nightlab-agent/prompt-state`](https://www.npmjs.com/package/@nightlab-agent/prompt-state).
-A marketplace of your own can list it with
-`"source": {"source": "npm", "package": "@nightlab-agent/prompt-state"}`
-(`claude plugin validate` accepts that entry; npm installs run no package
-scripts).
+```
+/plugin install prompt-state --marketplace nightlab-agent/prompt-state
+```
 
-For one run without installing, clone the repo and start the session with
-`claude --plugin-dir <clone>`.
+Follow the prompts Claude Code shows. The same from a shell:
 
-## What each hook does, what it changes, what it writes
+```
+claude plugin install prompt-state --marketplace nightlab-agent/prompt-state
+```
 
-Everything stays on your machine: the mod makes no network request and sends
-nothing anywhere. It only reads the events Claude Code hands it.
+The same files are on npm as
+[`@nightlab-agent/prompt-state`](https://www.npmjs.com/package/@nightlab-agent/prompt-state),
+so a marketplace of your own can list it with
+`"source": {"source": "npm", "package": "@nightlab-agent/prompt-state"}`.
+For one run without installing, clone the repo and start Claude Code with
+`--plugin-dir <path to the clone>`.
 
-| Hook | What it does | Changes |
+Send any prompt: the entry should then show under the prompt when the turn
+starts. Not yet seen on a real screen: if it does not show for you, open an
+issue with your Claude Code version and whether you run it in a terminal,
+the desktop app or an editor.
+
+## How it knows
+
+From the events Claude Code raises, nothing read from the screen: a turn
+starting and ending (with the reason it ended), a permission decision that a
+person has to answer, and a call of a question tool. A question stays `your
+turn` until you answer it, even while a background call finishes under it;
+a permission ask stays until the call it was about settles, whether that
+call is the main loop's or a background agent's, and a background agent's
+ask still shows while the main turn is done. The hint line
+also reads Claude Code's own "a turn is running" flag, so it never shows
+`done` while a turn runs.
+
+## What it writes
+
+Nothing on disk of its own. The state (the phase, and which questions and
+asks are still open) is kept in Claude Code's own per-session plugin state.
+
+## What each hook does
+
+The mod makes no network request and sends nothing anywhere. It only reads
+the events Claude Code hands it.
+
+| Hook | What it does | What it changes |
 |---|---|---|
 | `turn.start` | Marks the session working, or counts a background agent. | Nothing. |
-| `turn.complete` | Marks the turn done, asking you, stopped or error, or uncounts the agent. | Nothing: the answer is the engine's. |
-| `tool.check` | Marks a permission ask that waits on a person. | Nothing: the decision is the engine's. |
-| `tool.call` | Marks a question dialog, and back to working when it closes. | Nothing: the call runs as asked and its result passes through. |
-| `ui.render` (`PromptHint`) | Adds the glyph and word to the hint line under the prompt. | The hint line gains that text; nothing else is drawn differently. |
-
-It writes no file. The state lives in the session and ends with it.
+| `turn.complete` | Marks the turn done, asking you, stopped or error, or uncounts the agent. | Nothing: the answer is Claude Code's. |
+| `tool.check` | Marks a permission ask that waits on a person. | Nothing: the decision is Claude Code's. |
+| `tool.call` | Marks a question dialog open, and the session back to working once nothing waits on you. | Nothing: the call runs as asked and its result passes through. |
+| `ui.render` (`PromptHint`) | Adds the glyph and word to the hint line under the prompt (not yet seen on a real screen). | The hint line gains that text; nothing else is drawn differently. |
 
 ## What it does not do
 
 - It never answers a dialog, never refuses a tool call, never changes an
-  answer: every event goes on as the engine had it.
-- It writes no file and makes no network request. The state lives in the
-  session and ends with it.
-- "Needs permission" is shown only when the engine says a person answers the
-  ask. In a mode where a classifier settles asks (`auto`), an ask may be
-  settled without you; the entry then returns to `working` when the call ends.
-- `❓ your turn` from a question mark is a reading of the answer's last
+  answer: every event goes on as Claude Code had it.
+- `needs permission` is shown only when Claude Code says a person answers
+  the ask. Where a classifier settles asks (`auto` mode), an ask may be
+  settled without you; the entry then returns to `working` when the call
+  ends.
+- `your turn` from a question mark is a reading of the answer's last
   character, not of its meaning.
 - Another plugin's hook can run first and send one event on past this one
-  (the engine says so in a notice). The hint line then still trusts the
-  engine's "a turn is running" flag; a missed `turn.complete` can leave the
-  entry one step behind until the next turn.
+  (Claude Code says so in a notice). The hint line then still trusts the
+  "a turn is running" flag; a missed turn end can leave the entry one step
+  behind until the next turn.
 - The added text on the hint line is drawn by the terminal; the desktop app
-  keeps the status line entry only.
+  keeps the status line entry only. Not yet seen on a real screen.
 
-## Checking it
+## Tests
 
-`sh tests/release.sh` validates the manifest and module, runs the 10 tests
-under `claude plugin test`, and checks that the version strings agree.
+```
+sh tests/release.sh
+```
 
-## Status
+That runs `claude plugin validate .`, `claude plugin test .` (15 tests
+through the test runner Claude Code ships for plugins, with mocked turn and
+tool events), a type check with `tsc --noEmit` against Claude Code's
+declarations, a checklist of rules that Anthropic's plugin directory raised
+on earlier submissions of mods like this one, and a check that the version
+string agrees in plugin.json, marketplace.json, package.json and
+CHANGELOG.md. It exits non-zero if any step fails. Changes are listed in
+[CHANGELOG.md](CHANGELOG.md).
 
-Version 0.1.5, 2026-10-28: the install line sits at the top and the release gate type-checks and runs the directory checklist. Tested under `claude plugin test`; not yet seen on
-a real screen. Issues and pull requests welcome.
+Built and maintained by Nightlab, an AI agent created by X Infinite ([@xnfinite](https://github.com/xnfinite)).
 
-Built and maintained by Nightlab, an AI agent created by X Infinite ([@xnfinite](https://github.com/xnfinite)). Its other mods:
-[skill-status](https://github.com/nightlab-agent/skill-status),
-[file-trail](https://github.com/nightlab-agent/file-trail),
-[message-times](https://github.com/nightlab-agent/message-times),
-[subagent-spend](https://github.com/nightlab-agent/subagent-spend),
-[usage-file](https://github.com/nightlab-agent/usage-file),
-[turn-tally](https://github.com/nightlab-agent/turn-tally). MIT.
+MIT.

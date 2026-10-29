@@ -9,6 +9,8 @@ export type Now = {
   agents: string[]
   /** ISO time the phase was entered. */
   since: string
+  /** What waits on the person: open question dialogs and permission asks, each as `loop|call`. */
+  open: { questions: string[]; asks: string[] }
 }
 
 declare module 'claude-code' {
