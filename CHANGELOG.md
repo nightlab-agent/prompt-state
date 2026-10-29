@@ -6,6 +6,10 @@ The form is Keep a Changelog; versions follow SemVer.
 
 ## 0.2.0 - 2026-10-29 - absorbs skill-status
 
+### Changed
+- README: a picture of the notice and the hint line from a Claude Code 2.1.312 terminal, at its full GitHub
+  address so the npm page shows it too.
+
 ### Added
 - Absorbs skill-status: the skill Claude loaded last shows in the notice under the prompt beside what Claude is doing, in
   one string (`⏳ working · skill: commit (3 this session)`, at most 120 characters), and `/skills-used` lists

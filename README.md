@@ -12,7 +12,11 @@ This mod (a plugin that changes how Claude Code draws things) adds one entry
 at the end of the hint line under the prompt, and pins a notice under the
 prompt with both facts. It writes no file. Nothing leaves your machine.
 
-What a terminal showed after a turn (the notice, then the hint line):
+![The bottom of Claude Code after a turn: the prompt, prompt-state's notice and the hint line ending in done](https://raw.githubusercontent.com/nightlab-agent/prompt-state/41500b90204b0ca6bb28c493b45598b3542c77b4/docs/preview.png)
+
+Seen in a Claude Code 2.1.312 terminal (120 columns) on 2026-10-29. That
+window's font has no emoji, so `✅` shows as a box; the text it drew was
+(the notice, then the hint line):
 
 ```
 ⚠ prompt-state: ✅ done
