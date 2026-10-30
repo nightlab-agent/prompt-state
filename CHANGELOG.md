@@ -12,8 +12,8 @@ The form is Keep a Changelog; versions follow SemVer.
   stayed. Claude Code keeps a plugin's stored state across `/clear` and sends no new session start, so a `/clear`
   now empties the list and the phase. A resume (another session taking this one's place) does the same, and
   `/skills-used` then says that loads before the resume are not listed. A turn end or a Skill call of the
-  conversation left that finishes after the `/clear` no longer writes into the new one. Five tests that failed
-  on 0.2.1 now pass, each beside a comparison case.
+  conversation left that finishes after the `/clear` no longer writes into the new one. Eight tests that failed
+  on 0.2.1 now pass; four comparison cases pass on both.
 - Known limit: a background agent still running at `/clear` or a resume drops out of the `agents working` count.
 
 ## 0.2.1 - 2026-10-29 - the right state after a background agent's ask; every skill load counted
