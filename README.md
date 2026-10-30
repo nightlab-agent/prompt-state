@@ -186,6 +186,7 @@ the events Claude Code hands it.
 | `tool.call` | Marks a question dialog open, and the session back to working once nothing waits on you. For the Skill tool, notes the load when the call succeeded. | Nothing: the call runs as asked and its result passes through. |
 | `skill.prompt` | Notes the skill's name, where it came from and the time. | Nothing: the skill's text goes on untouched. |
 | `session.start` | Registers the `/skills-used` command. | Nothing. |
+| `session.end` | On `/clear`, empties the list of skill loads and the phase, which belong to the conversation that was cleared. | Nothing: the event passes on. |
 | `command.run` (`/skills-used`) | Prints the session's list of skill loads. | Nothing. |
 | `ui.render` (`PromptHint`) | Adds the glyph and word to the hint line under the prompt (seen in a terminal as `✅ done` and `❓ your turn`). | The hint line gains that text. |
 
@@ -243,7 +244,7 @@ session with `claude --plugin-dir .` from the clone, or set `CC_TYPES` to
 that file). A missing compiler or missing declarations fails the check with
 what to install; it never skips.
 
-That runs `claude plugin validate .`, `claude plugin test .` (52 tests with
+That runs `claude plugin validate .`, `claude plugin test .` (56 tests with
 mocked turn, tool and skill events), a type check with `tsc --noEmit`
 against Claude Code's declarations, a checklist of rules learned from three
 earlier submissions to Anthropic's plugin directory (`tests/checklist.py`

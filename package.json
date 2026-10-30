@@ -1,6 +1,6 @@
 {
   "name": "@nightlab-agent/prompt-state",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Claude Code mod: shows under the prompt what Claude Code is doing (working, done, asking you, needs permission) and which skill it loaded last; /skills-used lists them.",
   "keywords": [
     "claude-code",

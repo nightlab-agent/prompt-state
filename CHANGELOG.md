@@ -4,6 +4,14 @@ The form is Keep a Changelog; versions follow SemVer.
 
 ## [Unreleased]
 
+## 0.2.2 - 2026-10-30 - /clear starts the list and the phase afresh
+
+### Fixed
+- After `/clear`, `/skills-used` still listed the skills of the conversation that was cleared, the status line
+  went on counting them ("2 this session" for the first skill of the new one), and the last phase (`✅ done`)
+  stayed. Claude Code keeps a plugin's stored state across `/clear` and sends no new session start, so a `/clear`
+  now empties the list and the phase. Two tests that failed on 0.2.1 now pass, beside two comparison cases.
+
 ## 0.2.1 - 2026-10-29 - the right state after a background agent's ask; every skill load counted
 
 ### Fixed

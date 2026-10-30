@@ -312,6 +312,24 @@ export const register: Register = (on, options) => {
     return next(e)
   })
 
+  // A /clear ends the conversation but not the process, and no session.start follows (Claude Code 2.1.310
+  // declarations, ExitReason 'clear'): the stored loads and phase belong to the old conversation, so they go.
+  on('session.end', async ($, e, next) => {
+    try {
+      return await next(e)
+    } finally {
+      if (e.reason === 'clear') {
+        try {
+          await update($, uses, () => [])
+          await update($, now, () => START)
+          await show($)
+        } catch {
+          // the old loads stay listed; the event is untouched
+        }
+      }
+    }
+  })
+
   on('command.run', { command: COMMAND }, async $ => ({ text: tracking(options) ? listText(await read($, uses)) : OFF_TEXT }))
 
   on('skill.prompt', async ($, e, next) => {
