@@ -65,6 +65,8 @@ export const SAME_LOAD_MS = 60_000
 export const VIA_TOOL = 'Skill tool'
 /** The status line's longest string. */
 export const STATUS_MAX = 120
+/** What /skills-used answers after a resume with no load since: the resumed session's earlier loads are not known. */
+export const RESUMED_TEXT = 'No skill loaded since this session was resumed (loads before the resume are not listed).'
 /** What /skills-used answers while the `skills` option is off. */
 export const OFF_TEXT = 'Skill tracking is off (the skills option).'
 
@@ -243,6 +245,11 @@ export const register: Register = (on, options) => {
   // leaves the question open: only the question's own call closes it, and only the call that was asked
   // about closes its permission ask, whether the call runs in the main loop or in a subagent's.
 
+  // Each /clear or resume starts a new conversation in this process. A hook that began in the old one and
+  // finishes after it (a turn end or a Skill call still running) writes nothing into the new one.
+  let era = 0
+  let resumed = false
+
   on('turn.start', async ($, e, next) => {
     const id = e.agentId
     await set($, s => (id === undefined ? newMainTurn(s, e.turnId) : s.agents.includes(id) ? s : { ...s, agents: [...s.agents, id].slice(-50) }))
@@ -250,14 +257,18 @@ export const register: Register = (on, options) => {
   })
 
   on('turn.complete', async ($, e, next) => {
+    const mine = era
     const r = await next(e)
+    if (mine !== era) return r
     const id = e.agentId
     await set($, s => (id === undefined ? endMainTurn(s, e.turnId, afterTurn(String(e.reason), e.answer ?? '')) : overlay({ ...dropLoop(s, id), agents: s.agents.filter(a => a !== id) })))
     return r
   })
 
   on('tool.check', async ($, e, next) => {
+    const mine = era
     const r = await next(e)
+    if (mine !== era) return r
     // a question's own dialog is `question`, set at its tool.call
     if (r.decision === 'ask' && e.approver === 'person' && !ASKING_TOOLS.has(e.tool)) {
       const key = callKey(e)
@@ -269,6 +280,7 @@ export const register: Register = (on, options) => {
   on('tool.call', async ($, e, next) => {
     const key = callKey(e)
     const began = stamp()
+    const mine = era
     if (ASKING_TOOLS.has(e.tool)) {
       await set($, s => enter({ ...s, open: { ...s.open, questions: s.open.questions.includes(key) ? s.open.questions : [...s.open.questions, key].slice(-50) } }, 'question'))
     }
@@ -281,7 +293,7 @@ export const register: Register = (on, options) => {
       await set($, s => settle(s, [key, loopKey(e)]))
     }
     // the Skill tool: the second event for a load, when the call succeeded
-    if (e.tool === 'Skill' && tracking(options) && r.deny === undefined && r.isError !== true) {
+    if (mine === era && e.tool === 'Skill' && tracking(options) && r.deny === undefined && r.isError !== true) {
       try {
         const name = (e as unknown as Record<string, unknown>).skill
         if (typeof name === 'string' && name) await note($, { at: began, skill: name.replace(/^\//, ''), source: VIA_TOOL }, stamp())
@@ -312,13 +324,16 @@ export const register: Register = (on, options) => {
     return next(e)
   })
 
-  // A /clear ends the conversation but not the process, and no session.start follows (Claude Code 2.1.310
-  // declarations, ExitReason 'clear'): the stored loads and phase belong to the old conversation, so they go.
+  // A /clear or a resume ends the conversation but not the process, and no session.start follows (Claude Code
+  // 2.1.310 declarations, ExitReason; 'resume': another session took its place): the stored loads and phase
+  // belong to the conversation left, so they go.
   on('session.end', async ($, e, next) => {
     try {
       return await next(e)
     } finally {
-      if (e.reason === 'clear') {
+      if (e.reason === 'clear' || e.reason === 'resume') {
+        era++
+        resumed = e.reason === 'resume'
         try {
           await update($, uses, () => [])
           await update($, now, () => START)
@@ -330,11 +345,16 @@ export const register: Register = (on, options) => {
     }
   })
 
-  on('command.run', { command: COMMAND }, async $ => ({ text: tracking(options) ? listText(await read($, uses)) : OFF_TEXT }))
+  on('command.run', { command: COMMAND }, async $ => {
+    if (!tracking(options)) return { text: OFF_TEXT }
+    const all = await read($, uses)
+    return { text: all.length === 0 && resumed ? RESUMED_TEXT : listText(all) }
+  })
 
   on('skill.prompt', async ($, e, next) => {
+    const mine = era
     const r = await next(e)
-    if (!tracking(options)) return r
+    if (mine !== era || !tracking(options)) return r
     try {
       await note($, { at: stamp(), skill: e.skill, source: String(e.source), ...(e.pluginName ? { plugin: e.pluginName } : {}) })
     } catch {

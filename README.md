@@ -186,7 +186,7 @@ the events Claude Code hands it.
 | `tool.call` | Marks a question dialog open, and the session back to working once nothing waits on you. For the Skill tool, notes the load when the call succeeded. | Nothing: the call runs as asked and its result passes through. |
 | `skill.prompt` | Notes the skill's name, where it came from and the time. | Nothing: the skill's text goes on untouched. |
 | `session.start` | Registers the `/skills-used` command. | Nothing. |
-| `session.end` | On `/clear`, empties the list of skill loads and the phase, which belong to the conversation that was cleared. | Nothing: the event passes on. |
+| `session.end` | On `/clear` or a resume, empties the list of skill loads and the phase, which belong to the conversation left. | Nothing: the event passes on. |
 | `command.run` (`/skills-used`) | Prints the session's list of skill loads. | Nothing. |
 | `ui.render` (`PromptHint`) | Adds the glyph and word to the hint line under the prompt (seen in a terminal as `✅ done` and `❓ your turn`). | The hint line gains that text. |
 
@@ -206,6 +206,10 @@ the events Claude Code hands it.
   Claude is following.
 - A missed turn end (another plugin's hook passing it by) can leave the
   entry one step behind until the next turn.
+- After `/clear` or a resume, a background agent still running is no longer
+  counted in `N agents working` (an agent ended by `/clear` with no turn end
+  would otherwise stay counted). After a resume, `/skills-used` lists only
+  the loads since the resume.
 - Which surfaces (terminal, desktop app, an editor) draw the hint line entry
   and the notice is not yet known: both have been seen in a terminal, not yet
   in the desktop app or an editor. A surface that draws no notice still
@@ -244,7 +248,7 @@ session with `claude --plugin-dir .` from the clone, or set `CC_TYPES` to
 that file). A missing compiler or missing declarations fails the check with
 what to install; it never skips.
 
-That runs `claude plugin validate .`, `claude plugin test .` (56 tests with
+That runs `claude plugin validate .`, `claude plugin test .` (64 tests with
 mocked turn, tool and skill events), a type check with `tsc --noEmit`
 against Claude Code's declarations, a checklist of rules learned from three
 earlier submissions to Anthropic's plugin directory (`tests/checklist.py`

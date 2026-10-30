@@ -4,13 +4,17 @@ The form is Keep a Changelog; versions follow SemVer.
 
 ## [Unreleased]
 
-## 0.2.2 - 2026-10-30 - /clear starts the list and the phase afresh
+## 0.2.2 - 2026-10-30 - /clear and resume start the list and the phase afresh
 
 ### Fixed
 - After `/clear`, `/skills-used` still listed the skills of the conversation that was cleared, the status line
   went on counting them ("2 this session" for the first skill of the new one), and the last phase (`✅ done`)
   stayed. Claude Code keeps a plugin's stored state across `/clear` and sends no new session start, so a `/clear`
-  now empties the list and the phase. Two tests that failed on 0.2.1 now pass, beside two comparison cases.
+  now empties the list and the phase. A resume (another session taking this one's place) does the same, and
+  `/skills-used` then says that loads before the resume are not listed. A turn end or a Skill call of the
+  conversation left that finishes after the `/clear` no longer writes into the new one. Five tests that failed
+  on 0.2.1 now pass, each beside a comparison case.
+- Known limit: a background agent still running at `/clear` or a resume drops out of the `agents working` count.
 
 ## 0.2.1 - 2026-10-29 - the right state after a background agent's ask; every skill load counted
 
