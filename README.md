@@ -32,8 +32,8 @@ One line at the Claude Code prompt:
 ```
 
 That needs Claude Code 2.1.275 or later. Follow the prompts Claude Code shows. It adds a marketplace
-named `nightlab-prompt-state`. The two install lines were not run by this repo's tests; the one-run
-line below was, in the screen preview.
+named `nightlab-prompt-state`.
+The two install lines were not run by this repo's tests.
 The same from a shell (Claude Code 2.1.292 or later):
 
 ```
