@@ -15,6 +15,8 @@ export type Now = {
   base?: Phase
   /** The running main turn's id (`turn.start`'s `turnId`); a turn end with another id is a late one. */
   turn?: string
+  /** Each running subagent or teammate loop's turn id; that loop's turn end with another id is a late one. */
+  agentTurns?: Record<string, string>
 }
 
 /** One load of a skill, as the status line and /skills-used show it. */

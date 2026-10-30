@@ -8,7 +8,7 @@
       "name": "prompt-state",
       "source": "./",
       "description": "What Claude Code is doing, at a glance under the prompt, and which skill it loaded last.",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "category": "productivity"
     }
   ],

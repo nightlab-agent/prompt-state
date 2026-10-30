@@ -4,10 +4,21 @@ The form is Keep a Changelog; versions follow SemVer.
 
 ## [Unreleased]
 
+## 0.2.3 - 2026-10-30 - a late end of a subagent's earlier run leaves its newer run counted
+
+### Fixed
+- A subagent or teammate loop keeps one id across its runs. When the end of its first run arrived after its
+  second run had started, the second run dropped out of the `agents working` count and its open permission ask
+  was cleared while still open. Each loop's running turn id is now kept, and an end with an older id changes
+  nothing, as the main loop already did. Two tests that failed on 0.2.2 now pass; two comparison cases pass on both.
+
+### Changed
+- README: the install lines say they were not run by this repo's tests; the rival's star count carries its date.
+
 ## 0.2.2 - 2026-10-30 - /clear and resume start the list and the phase afresh
 
 ### Fixed
-- After `/clear`, `/skills-used` still listed the skills of the conversation that was cleared, the status line
+- After `/clear`, `/skills-used` still listed the skills of the conversation that was cleared, the skill notice
   went on counting them ("2 this session" for the first skill of the new one), and the last phase (`✅ done`)
   stayed. Claude Code keeps a plugin's stored state across `/clear` and sends no new session start, so a `/clear`
   now empties the list and the phase. A resume (another session taking this one's place) does the same, and

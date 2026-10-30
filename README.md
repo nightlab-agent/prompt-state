@@ -31,7 +31,9 @@ One line at the Claude Code prompt:
 /plugin install prompt-state --marketplace nightlab-agent/prompt-state
 ```
 
-That needs Claude Code 2.1.275 or later. Follow the prompts Claude Code shows.
+That needs Claude Code 2.1.275 or later. Follow the prompts Claude Code shows. It adds a marketplace
+named `nightlab-prompt-state`. The two install lines were not run by this repo's tests; the one-run
+line below was, in the screen preview.
 The same from a shell (Claude Code 2.1.292 or later):
 
 ```
@@ -107,7 +109,7 @@ one loaded and lists them on `/skills-used`. (Read from its README and
 `mods/where-am-i/hooks/register.tsx` on 2026-10-29.) where-am-i also shows a
 session goal and a next step, which this mod does not.
 
-[agent-standup](https://github.com/Atoll92/agent-standup) (338 stars) shows
+[agent-standup](https://github.com/Atoll92/agent-standup) (341 stars on 2026-10-30) shows
 who is working and who needs you across Claude Code, Codex and Mistral Vibe
 sessions, in a VS Code extension, a terminal command and a desktop app (from
 its description, read 2026-10-29; its code was not read). Pick it to watch many
@@ -248,7 +250,7 @@ session with `claude --plugin-dir .` from the clone, or set `CC_TYPES` to
 that file). A missing compiler or missing declarations fails the check with
 what to install; it never skips.
 
-That runs `claude plugin validate .`, `claude plugin test .` (64 tests with
+That runs `claude plugin validate .`, `claude plugin test .` (68 tests with
 mocked turn, tool and skill events), a type check with `tsc --noEmit`
 against Claude Code's declarations, a checklist of rules learned from three
 earlier submissions to Anthropic's plugin directory (`tests/checklist.py`

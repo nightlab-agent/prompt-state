@@ -239,6 +239,25 @@ export const newMainTurn = (s: Now, turn?: string): Now => overlay({ ...dropLoop
 export const endMainTurn = (s: Now, turn: string | undefined, phase: Phase): Now =>
   s.turn !== undefined && turn !== undefined && turn !== s.turn ? s : overlay({ ...s, base: phase })
 
+/** A subagent or teammate loop's turn starts: the loop is counted, and this run's id is kept. */
+export const startAgentTurn = (s: Now, id: string, turn?: string): Now => {
+  const agents = s.agents.includes(id) ? s.agents : [...s.agents, id].slice(-50)
+  const agentTurns = { ...(s.agentTurns ?? {}) }
+  if (turn === undefined) delete agentTurns[id]
+  else agentTurns[id] = turn
+  for (const k of Object.keys(agentTurns)) if (!agents.includes(k)) delete agentTurns[k]
+  return { ...s, agents, agentTurns }
+}
+
+/** A subagent or teammate loop's turn ends: it stops being counted and its open calls drop, unless a
+ * newer run of the same loop has started since (a late end of the earlier run). */
+export const endAgentTurn = (s: Now, id: string, turn?: string): Now => {
+  const running = s.agentTurns?.[id]
+  if (running !== undefined && turn !== undefined && turn !== running) return s
+  const { [id]: _, ...agentTurns } = s.agentTurns ?? {}
+  return overlay({ ...dropLoop(s, id), agents: s.agents.filter(a => a !== id), agentTurns })
+}
+
 export const register: Register = (on, options) => {
   // What waits on the person is kept in the stored state beside the phase, keyed by the call. A
   // background call that settles while a question is open (a Read finishing under an AskUserQuestion)
@@ -252,7 +271,7 @@ export const register: Register = (on, options) => {
 
   on('turn.start', async ($, e, next) => {
     const id = e.agentId
-    await set($, s => (id === undefined ? newMainTurn(s, e.turnId) : s.agents.includes(id) ? s : { ...s, agents: [...s.agents, id].slice(-50) }))
+    await set($, s => (id === undefined ? newMainTurn(s, e.turnId) : startAgentTurn(s, id, e.turnId)))
     return next(e)
   })
 
@@ -261,7 +280,7 @@ export const register: Register = (on, options) => {
     const r = await next(e)
     if (mine !== era) return r
     const id = e.agentId
-    await set($, s => (id === undefined ? endMainTurn(s, e.turnId, afterTurn(String(e.reason), e.answer ?? '')) : overlay({ ...dropLoop(s, id), agents: s.agents.filter(a => a !== id) })))
+    await set($, s => (id === undefined ? endMainTurn(s, e.turnId, afterTurn(String(e.reason), e.answer ?? '')) : endAgentTurn(s, id, e.turnId)))
     return r
   })
 
