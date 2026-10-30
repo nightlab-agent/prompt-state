@@ -10,7 +10,9 @@ The form is Keep a Changelog; versions follow SemVer.
 - A subagent or teammate loop keeps one id across its runs. When the end of its first run arrived after its
   second run had started, the second run dropped out of the `agents working` count and its open permission ask
   was cleared while still open. Each loop's running turn id is now kept, and an end with an older id changes
-  nothing, as the main loop already did. Two tests that failed on 0.2.2 now pass; two comparison cases pass on both.
+  nothing, as the main loop already did. A new run also drops what the earlier run left open, as a new main
+  turn does, so an ask the earlier run never settled no longer shows over the new run. Three tests that failed
+  on 0.2.2 now pass; the six cases beside them pass on both.
 
 ### Changed
 - README: the install lines say they were not run by this repo's tests; the rival's star count carries its date.

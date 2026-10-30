@@ -239,8 +239,11 @@ export const newMainTurn = (s: Now, turn?: string): Now => overlay({ ...dropLoop
 export const endMainTurn = (s: Now, turn: string | undefined, phase: Phase): Now =>
   s.turn !== undefined && turn !== undefined && turn !== s.turn ? s : overlay({ ...s, base: phase })
 
-/** A subagent or teammate loop's turn starts: the loop is counted, and this run's id is kept. */
-export const startAgentTurn = (s: Now, id: string, turn?: string): Now => {
+/** A subagent or teammate loop's turn starts: the loop is counted, and this run's id is kept. A new run
+ * drops what the loop's earlier run left open, as a new main turn does: nothing of it waits any more. */
+export const startAgentTurn = (s0: Now, id: string, turn?: string): Now => {
+  const earlier = s0.agentTurns?.[id]
+  const s = earlier !== undefined && turn !== undefined && turn !== earlier ? overlay(dropLoop(s0, id)) : s0
   const agents = s.agents.includes(id) ? s.agents : [...s.agents, id].slice(-50)
   const agentTurns = { ...(s.agentTurns ?? {}) }
   if (turn === undefined) delete agentTurns[id]
