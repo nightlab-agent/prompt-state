@@ -2,9 +2,9 @@
 
 Shows what Claude Code is doing and which skill loaded last.
 
-Claude Code's prompt looks the same whatever the session is doing, so during
-a long turn it is hard to tell whether Claude is still working, has finished,
-or is waiting for you
+Claude Code's own signs of what it is doing are small (a spinner line and an
+`esc to interrupt` hint while it works), so during a long turn it is easy to
+miss whether Claude is still working, has finished, or is waiting for you
 ([anthropics/claude-code#21894](https://github.com/anthropics/claude-code/issues/21894)).
 With many skills installed there is also no lasting sign of which one is in
 play ([anthropics/claude-code#16078](https://github.com/anthropics/claude-code/issues/16078)).
@@ -77,7 +77,7 @@ Code printed "prompt-state: its skill.prompt hook was skipped", which is expecte
 ```
 
 The hint line entry, as a terminal showed it (the mod adds the part after the
-last `·`; it has also been seen as `❓ your turn`):
+last `·`; it has also been seen as `⏳ working` and `❓ your turn`):
 
 ```
 ⏵⏵ bypass permissions on (shift+tab to cycle) · ✅ done
@@ -191,7 +191,7 @@ the events Claude Code hands it.
 | `session.start` | Registers the `/skills-used` command. | Nothing. |
 | `session.end` | On `/clear` or a resume, empties the list of skill loads and the phase, which belong to the conversation left. | Nothing: the event passes on. |
 | `command.run` (`/skills-used`) | Prints the session's list of skill loads. | Nothing. |
-| `ui.render` (`PromptHint`) | Adds the glyph and word to the hint line under the prompt (seen in a terminal as `✅ done` and `❓ your turn`). | The hint line gains that text. |
+| `ui.render` (`PromptHint`) | Adds the glyph and word to the hint line under the prompt (seen in a terminal as `⏳ working`, `✅ done` and `❓ your turn`). | The hint line gains that text. |
 
 ## What it does not do
 
