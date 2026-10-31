@@ -83,7 +83,7 @@ last `·`; it has also been seen as `❓ your turn`):
 ⏵⏵ bypass permissions on (shift+tab to cycle) · ✅ done
 ```
 
-Seen on a real screen so far: `✅ done`, `❓ your turn` and `skill: name (n this session)`. The
+Seen on a real screen so far: `⏳ working`, `✅ done`, `❓ your turn` and `skill: name (n this session)`. The
 other rows are checked by the tests, not yet seen on a real screen.
 
 | Shown | When |
@@ -202,6 +202,11 @@ the events Claude Code hands it.
   the ask. Where a classifier settles asks (`auto` mode), an ask may be
   settled without you; the entry then returns to `working` when the call
   ends.
+- In a terminal, a question box (AskUserQuestion) covers the notice and
+  the hint line until you answer it, so while one is open the question
+  itself is the sign (seen 2026-10-31, Claude Code 2.1.312). On a real
+  screen, `your turn` has been seen after an answer that ended with a
+  question mark.
 - `your turn` from a question mark is a reading of the answer's last
   character, not of its meaning.
 - "Loaded last" is not "still governing the reply": a loaded skill's text
