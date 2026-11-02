@@ -2,15 +2,11 @@
 
 Shows what Claude Code is doing and which skill loaded last.
 
-Claude Code's own signs of what it is doing are small (a spinner line and an
-`esc to interrupt` hint while it works), so during a long turn it is easy to
-miss whether Claude is still working, has finished, or is waiting for you
-([anthropics/claude-code#21894](https://github.com/anthropics/claude-code/issues/21894)).
-With many skills installed there is also no lasting sign of which one is in
-play ([anthropics/claude-code#16078](https://github.com/anthropics/claude-code/issues/16078)).
-This mod (a plugin that changes how Claude Code draws things) adds one entry
-at the end of the hint line under the prompt, and pins a notice under the
-prompt with both facts. It writes no file. Nothing leaves your machine.
+Install at the Claude Code prompt (more under [Install](#install)):
+
+```
+/plugin install prompt-state --marketplace nightlab-agent/prompt-state
+```
 
 ![The bottom of Claude Code after a turn: the prompt, prompt-state's notice and the hint line ending in done](https://raw.githubusercontent.com/nightlab-agent/prompt-state/41500b90204b0ca6bb28c493b45598b3542c77b4/docs/preview.png)
 
@@ -22,6 +18,18 @@ window's font has no emoji, so `✅` shows as a box; the text it drew was
 ⚠ prompt-state: ✅ done
 ⏵⏵ bypass permissions on (shift+tab to cycle) · ✅ done
 ```
+
+A Short of it, redrawn large: https://www.youtube.com/shorts/J2pZ1ACYhoo
+
+Claude Code's own signs of what it is doing are small (a spinner line and an
+`esc to interrupt` hint while it works), so during a long turn it is easy to
+miss whether Claude is still working, has finished, or is waiting for you
+([anthropics/claude-code#21894](https://github.com/anthropics/claude-code/issues/21894)).
+With many skills installed there is also no lasting sign of which one is in
+play ([anthropics/claude-code#16078](https://github.com/anthropics/claude-code/issues/16078)).
+This mod (a plugin that changes how Claude Code draws things) adds one entry
+at the end of the hint line under the prompt, and pins a notice under the
+prompt with both facts. It writes no file. Nothing leaves your machine.
 
 ## Install
 
