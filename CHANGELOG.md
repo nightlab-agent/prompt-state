@@ -2,6 +2,10 @@
 
 The form is Keep a Changelog; versions follow SemVer.
 
+## 0.2.4 - 2026-11-02
+
+- README: the first lines say why (during a long turn it is hard to tell whether Claude is done), then the install line and the picture. No code change.
+
 ## [Unreleased]
 
 ## 0.2.3 - 2026-10-30 - a late end of a subagent's earlier run leaves its newer run counted
