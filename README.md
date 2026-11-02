@@ -1,6 +1,8 @@
 # prompt-state
 
-Shows what Claude Code is doing and which skill loaded last.
+In a long session it is easy to miss whether Claude Code is still working,
+has finished, or is waiting for you. This plugin shows which one, and which
+skill loaded last, under the prompt.
 
 Install at the Claude Code prompt (more under [Install](#install)):
 
